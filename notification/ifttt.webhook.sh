@@ -6,7 +6,7 @@ export LC_ALL=C
 # notification/ifttt.webhook.sh
 # https://github.com/furplag/cogman
 # Copyright 2019+ furplag
-# Licensed under MIT (https://github.com/furplag/cogman/blob/master/LICENSE)
+# Licensed under MIT (https://github.com/furplag/cogman/blob/main/LICENSE)
 #
 # scripts on startup, shutdown and initial settings to virtual machines,
 # maybe useful for poor man like me, but currently just only for me own .

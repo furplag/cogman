@@ -3,10 +3,10 @@ set -ue -o pipefail
 export LC_ALL=C
 
 ###
-# el7.startup.sh
+# el8.startup.sh
 # https://github.com/furplag/cogman
 # Copyright 2019+ furplag
-# Licensed under MIT (https://github.com/furplag/cogman/blob/master/LICENSE)
+# Licensed under MIT (https://github.com/furplag/cogman/blob/main/LICENSE)
 #
 # scripts on startup, shutdown and initial settings to virtual machines,
 # maybe useful for poor man like me, but currently just only for me own .
@@ -44,10 +44,16 @@ export LC_ALL=C
 #     >>  See also IFTTT webhook documentation, for more information .
 
 # variable
-if ! declare -p repo_url >/dev/null 2>&1; then declare -r repo_url='https://raw.githubusercontent.com/furplag/cogman/master'; fi
+if ! declare -p repo_url >/dev/null 2>&1; then declare -r repo_url='https://raw.githubusercontent.com/furplag/cogman/main'; fi
 if ! declare -p we_have_done >/dev/null 2>&1; then declare -r we_have_done='/etc/profile.d/cogman.initialized.sh'; fi
 if ! declare -p init_configs >/dev/null 2>&1; then declare -r init_configs='locale selinux slackbot ssh sshkey timezone'; fi
 if ! declare -p indent >/dev/null 2>&1; then declare indent='\xF0\x9F\x91\xBB'; fi
+
+# vars of server initialization
+declare -r locale_lang=
+declare -r timezone=
+declare -r ssh_port_number=
+declare -r ssh_key_passphrase=
 
 # vars of server status notification
 if ! declare -p ifttt_api_key >/dev/null 2>&1; then declare -r ifttt_api_key=; fi
@@ -76,7 +82,7 @@ if ! did_we_have_done; then source <(curl "${repo_url}/el8.initialize.sh" -fLsS)
 
 # Server startup notification .
 if [[ -z ${ifttt_api_key} ]]; then echo -e "${indent}\xF0\x9F\x8D\xA3  : ${platform}:${project}:${instance} start ."
-elif ! bash -c "curl ${repo_url}/notification/ifttt.webhook.sh -LfsS | bash -s \"${ifttt_api_key}\" \"startup\" \"${platform}\" \"${project}\" \"${instance}\""; then
+elif ! bash -c "curl ${repo_url}/notification/ifttt.webhook.sh -LfsS | bash -s \"${ifttt_api_key}\" \"ping\" \"started\" \"${platform}${project}\" \"${instance}\""; then
   echo -e "${indent}\xF0\x9F\x91\xB9: server startup notification (IFTTT webhook) failed ."; fi
 
 # end .
