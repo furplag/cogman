@@ -50,11 +50,11 @@ if ! declare -p init_configs >/dev/null 2>&1; then declare -r init_configs='loca
 if ! declare -p indent >/dev/null 2>&1; then declare indent='\xF0\x9F\x91\xBB'; fi
 
 # vars of server initialization
-if ! declare -p platform >/dev/null 2>&1; then declare -r locale_lang=; fi
-if ! declare -p platform >/dev/null 2>&1; then declare -r timezone=; fi
-if ! declare -p platform >/dev/null 2>&1; then declare -r ssh_port_number=; fi
-if ! declare -p platform >/dev/null 2>&1; then declare -r ssh_key_passphrase=; fi
-if ! declare -p platform >/dev/null 2>&1; then declare -r ssh_keygen_options='-t ed25519'; fi
+if ! declare -p locale_lang >/dev/null 2>&1; then declare -r locale_lang=; fi
+if ! declare -p timezone >/dev/null 2>&1; then declare -r timezone=; fi
+if ! declare -p ssh_port_number >/dev/null 2>&1; then declare -r ssh_port_number=; fi
+if ! declare -p ssh_key_passphrase >/dev/null 2>&1; then declare -r ssh_key_passphrase=; fi
+if ! declare -p ssh_keygen_options >/dev/null 2>&1; then declare -r ssh_keygen_options='-t ed25519'; fi
 
 # vars of server status notification
 if ! declare -p ifttt_api_key >/dev/null 2>&1; then declare -r ifttt_api_key=; fi
