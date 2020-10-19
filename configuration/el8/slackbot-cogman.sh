@@ -96,7 +96,7 @@ function _create_slackbot_user() {
 function _install_nodejs() {
   local -r _indent="${1:-${indent}\xF0\x9F\xA4\x96}"
   local -i _result=0
-  if node -v >/dev/null 2>&1 && npm -v >/dev/null 2>&1; then echo -e "${_indent}\xF0\x9F\x8D\xA3: Node.js installed, already .";
+  if node -v >/dev/null 2>&1 && npm -v >/dev/null 2>&1; then echo -e "${_indent}\xF0\x9F\x8D\xA5: Node.js installed, already .";
   elif dnf install nodejs -qy 2>/dev/null; then echo -e "${_indent}\xF0\x9F\x8D\xA3: Node.js installed .";
   elif dnf install epel-release -qy 2>/dev/null && dnf install nodejs -qy 2>/dev/null; then echo -e "${_indent}\xF0\x9F\x8D\xA3: Node.js installed .";
   else echo -e "${_indent}\xF0\x9F\x91\xBA: failed install Node.js ."; return 1; fi
@@ -107,7 +107,7 @@ function _install_nodejs() {
 function _install_node_modules() {
   local -r _indent="${1:-${indent}\xF0\x9F\xA4\x96}"
   local -i _result=0
-  if npm install -g yo generator-hubot >/dev/null 2>&1; then echo -e "${_indent}\xF0\x9F\x8D\xA3: Node modules ( Yo, Generator Hubot ) installed .";
+  if npm install -g yo generator-hubot; then echo -e "${_indent}\xF0\x9F\x8D\xA3: Node modules ( Yo, Generator Hubot ) installed .";
   else echo -e "${_indent}\xF0\x9F\x91\xBA: failed install Node modules ( Yo, Generator Hubot ) ."; _result=1; fi
 
   return $_result
@@ -137,7 +137,7 @@ function _install_hubot() {
 
   if [[ $_result -ne 0 ]]; then :;
   elif [[ -f ${slackbot_hubot_dir}/bin/hubot ]]; then echo -e "${_indent}\xF0\x9F\x8D\xA5: Hubot ( ${slackbot_hubot_dir}/bin/hubot ) already exists .";
-  elif sudo -i -u ${slackbot_user} bash -c "cd ${slackbot_hubot_dir} && ${_command} && cd -" >/dev/null 2>&1; then
+  elif sudo -i -u ${slackbot_user} bash -c "cd ${slackbot_hubot_dir} && ${_command} && cd -"; then
     echo -e "${_indent}\xF0\x9F\x8D\xA3: Hubot activate .";
   else _result=1; echo -e "${_indent}\xF0\x9F\x91\xBA: failed construction Hubot ."; fi
 

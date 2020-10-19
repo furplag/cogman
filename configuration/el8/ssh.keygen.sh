@@ -49,7 +49,7 @@ function _ssh_keygen() {
   else
     local -r _ssh_key_passphrase="$(_passphrase "${1:-}")"
     local -r _ssh_keygen_options="${2:-"-t ed25519"}"
-    echo "ssh-keygen ${_ssh_keygen_options} -N ${_ssh_key_passphrase} -C ${HOSTNAME} -f ${_dir}/${_prefix}.key"
+
     if [[ -z "${_ssh_key_passphrase}" ]]; then echo -e "${_indent}\xF0\x9F\x91\xBA: could not generate key without passphrase .";
     elif ssh-keygen ${_ssh_keygen_options} -N "${_ssh_key_passphrase}" -C "${HOSTNAME}" -f "${_dir}/${_prefix}.key" 1>/dev/null; then
       cat ${_dir}/${_prefix}.key.pub >>${_dir}/authorized_keys && \
