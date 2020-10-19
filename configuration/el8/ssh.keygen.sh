@@ -6,7 +6,7 @@ export LC_ALL=C
 # configuration/ssh.keygen.sh
 # https://github.com/furplag/cogman
 # Copyright 2019+ furplag
-# Licensed under MIT (https://github.com/furplag/cogman/blob/master/LICENSE)
+# Licensed under MIT (https://github.com/furplag/cogman/blob/main/LICENSE)
 #
 # a part of scripts on initial settings to virtual machines .
 #
@@ -36,7 +36,7 @@ function _passphrase() {
 # generate SSH key pair .
 #
 # @param _ssh_key_passphrase create random string using mkpasswd, if not specified the value of this key or empty
-# @param _ssh_keygen_options parameter which ssh key generate ( default: -t rsa -b 4096 ) .
+# @param _ssh_keygen_options parameter which ssh key generate ( default: -t ed25519 ) .
 function _ssh_keygen() {
   local -r _indent="${indent}\xF0\x9F\x94\x90"
   local -r _dir=${HOME:-/root}/.ssh

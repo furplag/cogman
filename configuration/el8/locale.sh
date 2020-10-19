@@ -6,7 +6,7 @@ export LC_ALL=C
 # configuration/locale.sh
 # https://github.com/furplag/cogman
 # Copyright 2019+ furplag
-# Licensed under MIT (https://github.com/furplag/cogman/blob/master/LICENSE)
+# Licensed under MIT (https://github.com/furplag/cogman/blob/main/LICENSE)
 #
 # a part of scripts on initial settings to virtual machines .
 #

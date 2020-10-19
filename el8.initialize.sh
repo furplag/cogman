@@ -3,10 +3,10 @@ set -ue -o pipefail
 export LC_ALL=C
 
 ###
-# el7.initialize.sh
+# el8.initialize.sh
 # https://github.com/furplag/cogman
 # Copyright 2019+ furplag
-# Licensed under MIT (https://github.com/furplag/cogman/blob/master/LICENSE)
+# Licensed under MIT (https://github.com/furplag/cogman/blob/main/LICENSE)
 #
 # scripts on initial settings to virtual machines,
 # maybe useful for poor man like me, but currently just only for me own .
@@ -38,7 +38,7 @@ export LC_ALL=C
 
 ###
 # variable
-if ! declare -p repo_url >/dev/null 2>&1; then declare -r repo_url='https://raw.githubusercontent.com/furplag/cogman/master'; fi
+if ! declare -p repo_url >/dev/null 2>&1; then declare -r repo_url='https://raw.githubusercontent.com/furplag/cogman/main'; fi
 if ! declare -p we_have_done >/dev/null 2>&1; then declare -r we_have_done='/etc/profile.d/cogman.initialized.sh'; fi
 
 # add some parameter before you create instance .
@@ -47,13 +47,13 @@ if ! declare -p we_have_done >/dev/null 2>&1; then declare -r we_have_done='/etc
 # locale_lang | (no change locale, if not specified the value of this key .)
 # timezone | (no change Timezone, if not specified the value of this key .)
 # ssh_port_number | (nothing to do about SSH daemon, if not specified the value of this key .)
-# ssh_key_length | 4096
 # ssh_key_passphrase | (create random string using mkpasswd, if not specified the value of this key or empty .)
+# ssh_keygen_options | -t ed25519 ( e.g. RSA key: -t rsa -b 4096 .)
 if ! declare -p locale_lang >/dev/null 2>&1; then declare -r locale_lang=; fi
 if ! declare -p timezone >/dev/null 2>&1; then declare -r timezone=; fi
 if ! declare -p ssh_port_number >/dev/null 2>&1; then declare -r ssh_port_number=; fi
 if ! declare -p ssh_key_passphrase >/dev/null 2>&1; then declare -r ssh_key_passphrase=; fi
-if ! declare -p ssh_keygen_options >/dev/null 2>&1; then declare -r ssh_keygen_options='-t ed25519'; fi
+if ! declare -p ssh_keygen_options >/dev/null 2>&1; then declare -r ssh_keygen_options=; fi
 
 # start .
 if declare -p indent >/dev/null 2>&1; then indent="${indent}\xF0\x9F\x91\xB6"; else declare indent='\xF0\x9F\x91\xBB\xF0\x9F\x91\xB6'; fi

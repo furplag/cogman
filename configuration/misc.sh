@@ -6,7 +6,7 @@ export LC_ALL=C
 # misc.sh
 # https://github.com/furplag/cogman
 # Copyright 2019+ furplag
-# Licensed under MIT (https://github.com/furplag/cogman/blob/master/LICENSE)
+# Licensed under MIT (https://github.com/furplag/cogman/blob/main/LICENSE)
 #
 # code snippets for know about what are we have to do .
 

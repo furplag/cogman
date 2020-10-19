@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 set -ue -o pipefail
 export LC_ALL=C
 
@@ -54,12 +54,13 @@ declare -r locale_lang=
 declare -r timezone=
 declare -r ssh_port_number=
 declare -r ssh_key_passphrase=
+declare -r ssh_key_passphrase=
 
 # vars of server status notification
 if ! declare -p ifttt_api_key >/dev/null 2>&1; then declare -r ifttt_api_key=; fi
 
-if ! declare -p platform >/dev/null 2>&1; then declare -r platform='unknown'; fi
-if ! declare -p project >/dev/null 2>&1; then declare -r project='unknown'; fi
+if ! declare -p platform >/dev/null 2>&1; then declare -r platform='Unknown'; fi
+if ! declare -p project >/dev/null 2>&1; then declare -r project='Unknown'; fi
 if ! declare -p instance >/dev/null 2>&1; then declare -r instance="$(hostname)"; fi
 
 # vars of server status notification using Slack and HUBOT

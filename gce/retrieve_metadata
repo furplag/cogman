@@ -1,0 +1,42 @@
+#!/bin/bash
+set -ue -o pipefail
+export LC_ALL=C
+
+###
+# gce/retrieve_metadata
+# https://github.com/furplag/cogman
+# Copyright 2019+ furplag
+# Licensed under MIT (https://github.com/furplag/cogman/blob/main/LICENSE)
+#
+# get metadata from GCP setting .
+# see also https://cloud.google.com/compute/docs/storing-retrieving-metadata .
+
+###
+# variable
+if ! declare -p metadata_url >/dev/null 2>&1; then declare -r metadata_url='http://metadata.google.internal/computeMetadata/v1'; fi
+
+###
+# functions
+
+###
+# get metadata from GCP setting .
+#
+# @param scope of metadata, meant  instance or project .
+# @param path and key of metadata
+# @return metadata value, or returns empty if does not specified
+function _get_metadata() {
+  local _metadata=
+  for _scope in instance project; do
+    : ${_metadata:="$(curl "${metadata_url}/${_scope}/${1:-'not.exists.'}?alt=text" -H "Metadata-Flavor: Google" -Lfs)"}
+    [[ -z ${_metadata} ]] || break
+  done
+
+  echo ${_metadata:-}
+}
+
+# variable
+declare result="$(_get_metadata "attributes/${1:-}")"
+if [[ -z ${result} ]]; then result="$(_get_metadata "${1:-}")"; fi
+
+echo ${result:-${2:-}}
+

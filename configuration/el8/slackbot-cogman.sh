@@ -6,7 +6,7 @@ export LC_ALL=C
 # configuration/slackbot-cogman.sh
 # https://github.com/furplag/cogman
 # Copyright 2019+ furplag
-# Licensed under MIT (https://github.com/furplag/cogman/blob/master/LICENSE)
+# Licensed under MIT (https://github.com/furplag/cogman/blob/main/LICENSE)
 #
 # script that automate to install and activate Hubot .
 
