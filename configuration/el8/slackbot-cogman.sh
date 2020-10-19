@@ -107,7 +107,7 @@ function _install_nodejs() {
 function _install_node_modules() {
   local -r _indent="${1:-${indent}\xF0\x9F\xA4\x96}"
   local -i _result=0
-  if npm install -g yo generator-hubot; then echo -e "${_indent}\xF0\x9F\x8D\xA3: Node modules ( Yo, Generator Hubot ) installed .";
+  if npm install -g yo && npm install -g generator-hubot; then echo -e "${_indent}\xF0\x9F\x8D\xA3: Node modules ( Yo, Generator Hubot ) installed .";
   else echo -e "${_indent}\xF0\x9F\x91\xBA: failed install Node modules ( Yo, Generator Hubot ) ."; _result=1; fi
 
   return $_result
