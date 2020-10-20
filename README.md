@@ -1,5 +1,5 @@
-# Cogman (CentOS 8)
-scripts on startup, shutdown and initial settings to virtual machines, maybe useful for
+# Cogman
+scripts on startup, shutdown and initial settings to virtual machines, maybe useful for  
 all poor man like me, but currently just only for me own .
 
 ## Overview
@@ -14,6 +14,8 @@ all poor man like me, but currently just only for me own .
             - only use Public Key Authentication .
             - enable to login as Root directly .
         - [generate SSH key pair .](#user-content-generate-ssh-key-pair-)
+    1. #### [install Slackbot ( Hubot Slack adapter ) .](#install-slackbot-hubot-slack-adapter--1)
+        - install daemonized Hubot .
     1. #### and never repeated .
 1. ### [Server startup/shutdown notification .](#user-content-server-startupshutdown-notification--1)
     - #### [using IFTTT .](#user-content-using-ifttt--1)
@@ -29,7 +31,7 @@ all poor man like me, but currently just only for me own .
 
 #### i18N (Locale / Language) setting .
 ```bash
-localctl set-locale LANG="${LANG}"
+localctl set-locale LANG="${LANG_TO_CHANGE}"
 ```
 
 #### l10N (Timezone) setting .
@@ -39,9 +41,8 @@ timedatectl set-timezone "${Area/City}"
 #### Unforcing SELinux .
 Set "Permissive" to SELinux .
 ```bash
-[[ $(getenforce | grep -Eo "^P" | wc -l) -lt 1 ]] && \
-  sed -i -e 's/^SELINUX=.*/#\0\nSELINUX=Permissive/' /etc/selinux/config && \
-  setenforce 0
+sed -i -e 's/^SELINUX=.*/#\0\nSELINUX=Permissive/' /etc/selinux/config && \
+setenforce 0
 ```
 
 ### change SSH port number for protect under crack .
@@ -57,18 +58,13 @@ ssh_port_number=${the_port_number_you_decide_to_change:-23456}
   setenforce 0
 
 # add SSH with another TCP port number to Firewall services .
-[[ ! -e /etc/firewalld/services/ssh-tweaked.xml ]] && \
-  cat /usr/lib/firewalld/services/ssh.xml > /etc/firewalld/services/ssh-tweaked.xml
+cat /usr/lib/firewalld/services/ssh.xml >/etc/firewalld/services/ssh-port-modified.xml && \
 sed -i -e "s@\(short>\).*\(<\/\)@\1SSH via $ssh_port_number\2@" \
- -e "s/port=\".*\"/port=\"$ssh_port_number\"/" /etc/firewalld/services/ssh-tweaked.xml
+ -e "s/port=\".*\"/port=\"$ssh_port_number\"/" /etc/firewalld/services/ssh-port-modified.xml
 
 # accept TCP port number \"${ssh_port_number}\" on Firewall .
-[[ $(systemctl status firewalld | grep -E "active \(running\)" | wc -l) -gt 0 ]] && \
-  systemctl restart firewalld && \
-  firewall-cmd --reload && \
-  [[ $(firewall-cmd --list-service --zone=public | grep ssh-tweaked | wc -l) -lt 1 ]] && \
-  firewall-cmd --add-service=ssh-tweaked --zone=public --permanent && \
-  firewall-cmd --reload
+firewall-cmd --add-service=ssh-port-modified --permanent && \
+firewall-cmd --reload
 ```
 
 > ## Important notice:
@@ -77,26 +73,31 @@ sed -i -e "s@\(short>\).*\(<\/\)@\1SSH via $ssh_port_number\2@" \
 
 #### SSH (sshd) setting .
 
-| setting | change to |
-|----|----|
-| Port | the port number you  decide to change . |
-| PermitRootLogin | without-password |
-| PubkeyAuthentication | yes |
-| PasswordAuthentication | no |
-| PermitEmptyPasswords | no |
-| ChallengeResponseAuthentication | no |
-| GSSAPIAuthentication | no |
+| setting | default | change to |
+|----|----|----|
+| AddressFamily | any | inet (v4 only) |
+| Port | 22 | the port number you decide to change . |
+| PermitRootLogin | no | without-password |
+| PubkeyAuthentication | yes | yes |
+| PasswordAuthentication | yes | no |
+| PermitEmptyPasswords | no | no |
+| ChallengeResponseAuthentication | yes | no |
+| GSSAPIAuthentication | yes | no |
+| UsePAM | yes | yes |
+| UseDNS | yes | no |
 
 ```bash
 ssh_port_number=${the_port_number_you_decide_to_change:-23456}
-cat /etc/ssh/sshd_config > /etc/ssh/sshd_config.ofDefault
+cat /etc/ssh/sshd_config > /etc/ssh/sshd_config.ofDefault && \
 sed -i -e "s/^#\?Port/Port ${ssh_port_number}\n#\0/" \
   -e 's/^#\?PermitRootLogin .*/PermitRootLogin without-password\n#\0/' \
   -e 's/^#\?PubkeyAuthentication .*/PubkeyAuthentication yes\n#\0/' \
   -e 's/^#\?PasswordAuthentication .*/PasswordAuthentication no\n#\0/' \
   -e 's/^#\?PermitEmptyPasswords .*/PermitEmptyPasswords no\n#\0/' \
+  -e 's/^#\?ChallengeResponseAuthentication .*/ChallengeResponseAuthentication no\n#\0/' \
   -e 's/^#\?GSSAPIAuthentication .*/GSSAPIAuthentication no\n#\0/' \
-  -e 's/^#\?GSSAPICleanupCredentials .*/GSSAPICleanupCredentials no\n#\0/' \
+  -e 's/^#\?UsePAM .*/UsePAM yes\n#\0/' \
+  -e 's/^#\?UseDNS .*/GSSAPICleanupCredentials no\n#\0/' \
   -e 's/^#\+/#/' \
   /etc/ssh/sshd_config && \
   systemctl reload sshd
@@ -116,6 +117,13 @@ ssh-keygen -t Ed25519 -N ${ssh_passphrase} -C "${HOSTNAME}.ssh.key" -f ~/.ssh/${
   chmod -R 600 ~/.ssh && \
   chmod -R 400 ~/.ssh/*.key
 ```
+
+### install Slackbot ( Hubot Slack adapter ) .
+#### Prerequirement
+- [ ] Redis installed and running .
+- [ ] Node.js and npm installed .
+
+[see this .](configuration/el8/slackbot-cogman.sh)
 
 ### Server startup/shutdown notification .
 you can receive notification of server startup, shutdown and any some way .
