@@ -14,7 +14,7 @@ all poor man like me, but currently just only for me own .
             - only use Public Key Authentication .
             - enable to login as Root directly .
         - [generate SSH key pair .](#user-content-generate-ssh-key-pair-)
-    1. #### [install Slackbot ( Hubot Slack adapter ) .](#install-slackbot-hubot-slack-adapter--1)
+    1. #### [install Slackbot ( Hubot Slack adapter ) .](#install-slackbot--hubot-slack-adapter---1)
         - install daemonized Hubot .
     1. #### and never repeated .
 1. ### [Server startup/shutdown notification .](#user-content-server-startupshutdown-notification--1)
