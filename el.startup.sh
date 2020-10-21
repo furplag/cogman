@@ -87,8 +87,8 @@ source <(curl "${repo_url}/configuration/misc.sh" -fLs);
 if ! did_we_have_done; then source <(curl "${repo_url}/el.initialize.sh" -fLsS); fi
 
 # Server startup notification .
-if [[ -z ${ifttt_api_key} ]]; then echo -e "${indent}\xF0\x9F\x8D\xA3  : ${platform}:${project}:${instance} start ."
-elif ! bash -c "curl ${repo_url}/notification/ifttt.webhook.sh -LfsS | bash -s \"${ifttt_api_key}\" \"ping\" \"started\" \"${platform}/${project}\" \"${instance}\""; then
+if [[ -z ${ifttt_api_key} ]]; then echo -e "${indent}\xF0\x9F\x8D\xA3  : ${platform}:${project} ${eventName}/${status} ."
+elif ! bash -c "curl ${repo_url}/notification/ifttt.webhook.sh -LfsS | bash -s \"${ifttt_api_key}\" \"statechanged\" \"startup\" \"${platform}/${project}\" \"${instance}\""; then
   echo -e "${indent}\xF0\x9F\x91\xB9: server startup notification (IFTTT webhook) failed ."; fi
 
 # end .

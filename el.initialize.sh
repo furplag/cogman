@@ -99,7 +99,7 @@ else echo -e "${indent}\xE2\x9A\xA1\xF0\x9F\x8D\xA5: SSH daemon running with por
 
 # generate SSH key pair .
 if do_we_have_to_do 'sshkey'; then echo -e "${indent}\xF0\x9F\x94\x90  : generate SSH key pair ...";
-  if bash -c "curl ${script_path}/ssh.keygen.sh -LfsS | bash -s -- ${ssh_key_passphrase} \"${ssh_keygen_options}\""; then do_config_completed 'sshkey'; fi
+  if bash -c "curl ${script_path}/ssh.keygen.sh -LfsS | bash -s -- \"${ssh_key_passphrase}\" \"${ssh_keygen_options}\""; then do_config_completed 'sshkey'; fi
 else echo -e "${indent}\xF0\x9F\x94\x90\xF0\x9F\x8D\xA5: SSH key already generated, check out directory \"/root/.ssh\" ."; fi
 
 # install slackbot .
