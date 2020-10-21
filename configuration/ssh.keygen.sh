@@ -27,7 +27,8 @@ function _passphrase() {
   local _result=${1:-}
   if [[ -n ${_result} ]]; then :;
   elif mkpasswd >/dev/null 2>&1; then _result="$(mkpasswd -l 14 -d 2 -s 2)";
-  elif dnf install -y expect >/dev/null 2>&1; then _result="$(mkpasswd -l 14 -d 2 -s 2)"; fi;
+  elif dnf install -y expect >/dev/null 2>&1; then _result="$(mkpasswd -l 14 -d 2 -s 2)";
+  elif yum install -y expect >/dev/null 2>&1; then _result="$(mkpasswd -l 14 -d 2 -s 2)"; fi
 
   echo $_result;
 }

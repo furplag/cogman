@@ -37,12 +37,17 @@ function _ssh_modify() {
   local -ar _current_ports=(`_get_ssh_ports`)
   local -r _indent="${indent}\xE2\x9A\xA1"
   local -i _result=1
+  local -i _semanage=1
 
   if [[ -z "${_port}" ]]; then echo -e "${_indent}\xF0\x9F\x91\xBB: the value of \"ssh-port\" not spacified ( SSH port (s) : ${_current_ports} ) .";
   elif echo "${_port}" | grep -Eo '[^0-9]' >/dev/null 2>&1; then echo -e "${_indent}\xF0\x9F\x91\xBA: the value \"${_port}\" is invalid port number .";
   elif [[ $((_port)) -lt 1 ]] || [[ $((_port)) -gt 65535 ]]; then echo -e "${_indent}\xF0\x9F\x91\xBA: the value \"${_port}\" is invalid port number .";
-  elif [[ " ${_current_ports} " =~ " ${_port} " ]]; then echo -e "${_indent}\xF0\x9F\x8D\xA5: SSH daemon running with port number \"${_port}\", already .";
   elif dnf install policycoreutils-python-utils -y >/dev/null 2>&1; then
+    # add another port number of SSH to the list of SELinux allows .
+    if semanage port -l | grep ssh_port_t | grep -Eo '[0-9]{1,5}' | grep -E "^${_port}\$" >/dev/null 2>&1; then :;
+    elif semanage port -a -t ssh_port_t -p tcp ${_port}; then echo -e "${_indent}\xF0\x9F\x8D\xA3: add ${_port}/TCP to the list of SELinux allows ."; fi
+    _result=0
+  elif yum install policycoreutils-python -y >/dev/null 2>&1; then
     # add another port number of SSH to the list of SELinux allows .
     if semanage port -l | grep ssh_port_t | grep -Eo '[0-9]{1,5}' | grep -E "^${_port}\$" >/dev/null 2>&1; then :;
     elif semanage port -a -t ssh_port_t -p tcp ${_port}; then echo -e "${_indent}\xF0\x9F\x8D\xA3: add ${_port}/TCP to the list of SELinux allows ."; fi
@@ -50,6 +55,7 @@ function _ssh_modify() {
   else echo -e "${_indent}\xF0\x9F\x91\xBA: could not add ${_port}/TCP to the list of SELinux allows ."; fi
 
   if [[ $((_result)) -ne 0 ]]; then :;
+  elif [[ $((_port)) -ne 22 ]]; then :;
   elif semanage port -l | grep ssh_port_t | grep -Eo '[0-9]+' | grep -E "^${_port}\$" >/dev/null 2>&1; then
     # add SSH with another TCP port number to Firewall services .
     cat /usr/lib/firewalld/services/ssh.xml >"/etc/firewalld/services/ssh-${_port}.xml" && \
@@ -63,6 +69,7 @@ function _ssh_modify() {
   fi
 
   if [[ $((_result)) -ne 0 ]]; then :;
+  elif [[ $((_port)) -ne 22 ]]; then :;
   elif systemctl status firewalld >/dev/null 2>&1; then
     # accept TCP port number \"${_port}\" on Firewall .
     for zone in `firewall-cmd --get-zones`; do
@@ -116,7 +123,6 @@ function _ssh_modify() {
   fi
 
   if [[ -z "${_port}" ]]; then _result=0;
-  elif [[ " ${_current_ports} " =~ " ${_port} " ]]; then _result=0;
   elif [[ $((_result)) -ne 0 ]]; then echo -e "${_indent}\xF0\x9F\x91\xB9: initialization failed, should change SSH port number another way .";
   else echo -e "${_indent}\xF0\x9F\x8D\xA3: SSH now ready to connect via ${_port}/TCP ."; fi
 

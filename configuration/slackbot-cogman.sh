@@ -96,12 +96,15 @@ function _create_slackbot_user() {
 function _install_nodejs() {
   local -r _indent="${1:-${indent}\xF0\x9F\xA4\x96}"
   local -i _result=0
-  if node -v >/dev/null 2>&1 && npm -v >/dev/null 2>&1; then echo -e "${_indent}\xF0\x9F\x8D\xA5: Node.js installed, already .";
-  elif dnf install nodejs -qy 2>/dev/null; then echo -e "${_indent}\xF0\x9F\x8D\xA3: Node.js installed .";
-  elif dnf install epel-release -qy 2>/dev/null && dnf install nodejs -qy 2>/dev/null; then echo -e "${_indent}\xF0\x9F\x8D\xA3: Node.js installed .";
-  else echo -e "${_indent}\xF0\x9F\x91\xBA: failed install Node.js ."; return 1; fi
 
-  return 0
+  if node -v >/dev/null 2>&1 && npm -v >/dev/null 2>&1; then echo -e "${_indent}\xF0\x9F\x8D\xA5: Node.js installed, already .";
+  elif bash <(curl https://rpm.nodesource.com/setup_lts.x -LfsS) >/dev/null 2>&1 && sed -i -e 's/enabled \?=\?1/enabled=0/' /etc/yum.repos.d/nodesource*.repo; then
+    if dnf install nodejs -y --enablerepo=nodesource >/dev/null 2>&1; then echo -e "${_indent}\xF0\x9F\x8D\xA3: Node.js installed .";
+    elif yum install nodejs -y --enablerepo=nodesource >/dev/null 2>&1; then echo -e "${_indent}\xF0\x9F\x8D\xA3: Node.js installed .";
+    else _result=1; echo -e "${_indent}\xF0\x9F\x91\xBA: failed install Node.js ."; fi
+  else _result=1; echo -e "${_indent}\xF0\x9F\x91\xBA: failed install Node.js ."; fi
+
+  return $_result
 }
 
 function _install_node_modules() {
@@ -121,7 +124,9 @@ function _install_redis() {
   local -i _result=0
   if [[ "`redis-cli ping 2>/dev/null`" = 'PONG' ]]; then echo -e "${_indent}\xF0\x9F\x8D\xA5: Redis is running, already .";
   elif systemctl start redis >/dev/null 2>&1; then echo -e "${_indent}\xF0\x9F\x8D\xA5: Redis is running, already .";
-  elif dnf install redis -qy 2>/dev/null && systemctl start redis >/dev/null 2>&1 && systemctl enable redis >/dev/null 2>&1; then
+  elif dnf install redis -y >/dev/null 2>&1 && systemctl start redis >/dev/null 2>&1 && systemctl enable redis >/dev/null 2>&1; then
+    echo -e "${_indent}\xF0\x9F\x8D\xA3: ready to use Redis server .";
+  elif yum install epel-release -y >/dev/null 2>&1 && yum install redis -y >/dev/null 2>&1 && systemctl start redis >/dev/null 2>&1 && systemctl enable redis >/dev/null 2>&1; then
     echo -e "${_indent}\xF0\x9F\x8D\xA3: ready to use Redis server .";
   else echo -e "${1:-${indent}\xF0\x9F\xA4\x96}\xF0\x9F\x91\xBA: failed start up Redis ."; _result=1; fi
 
@@ -131,7 +136,6 @@ function _install_redis() {
 function _install_hubot() {
   local -r _indent="${1:-${indent}\xF0\x9F\xA4\x96}"
   local -i _result=0
-
   if [[ -d "${slackbot_hubot_dir}" ]]; then echo -e "${_indent}\xF0\x9F\x8D\xA5: directory \"${slackbot_hubot_dir}\" already exists .";
   elif sudo -i -u ${slackbot_user} bash -c "mkdir -p ${slackbot_hubot_dir}" >/dev/null 2>&1; then :;
   else _result=1; echo -e "${_indent}\xF0\x9F\x91\xBA: failed create directory \"${slackbot_hubot_dir}\" ."; fi
@@ -162,8 +166,7 @@ User=${slackbot_user}
 Group=${slackbot_group}
 WorkingDirectory=${slackbot_hubot_dir}
 Environment=HUBOT_SLACK_TOKEN=${slackbot_hubot_token}
-ExecStart=sh bin/hubot --adapter slack
-ExecReload=/bin/kill -HUP \$MAINPID
+ExecStart=/bin/sh -c "bin/hubot --adapter slack"
 ExecStop=/bin/kill \$MAINPID
 
 [Install]
@@ -171,6 +174,7 @@ WantedBy=multi-user.target
 
 _EOT_
   fi
+
   if [[ -f /etc/systemd/system/slackbot-cogman.service ]]; then :;
   else _result=1; echo -e "${_indent}\xF0\x9F\x91\xBA: failed construction Hubot ."; fi
 

@@ -3,7 +3,7 @@ set -ue -o pipefail
 export LC_ALL=C
 
 ###
-# el8.initialize.sh
+# el.initialize.sh
 # https://github.com/furplag/cogman
 # Copyright 2019+ furplag
 # Licensed under MIT (https://github.com/furplag/cogman/blob/main/LICENSE)
@@ -11,8 +11,8 @@ export LC_ALL=C
 # scripts on initial settings to virtual machines,
 # maybe useful for poor man like me, but currently just only for me own .
 #
-# Overview:
-# 1. Server initial setting (do only once each) .
+# Overview
+# 1.  Server initial setting (do only first time) .
 #   1.  makes some optimizations for the VM to stands a web server .
 #     - i18N (Locale / Language) setting .
 #     - l10N (Timezone) setting .
@@ -21,20 +21,25 @@ export LC_ALL=C
 #     - Firewall setting (firewalld) .
 #     - SSH port number setting (sshd) .
 #
-#       | setting | change to |
-#       |----|----|
-#       | Port | the port number you  decide to change . |
-#       | PermitRootLogin | without-password |
-#       | PubkeyAuthentication | yes |
-#       | PasswordAuthentication | no |
-#       | PermitEmptyPasswords | no |
-#       | ChallengeResponseAuthentication | no |
-#       | GSSAPIAuthentication | no |
+#       | setting | default | change to |
+#       |----|----|----|
+#       | AddressFamily | any | inet (v4 only) |
+#       | Port | 22 | the port number you decide to change . |
+#       | PermitRootLogin | no | without-password |
+#       | PubkeyAuthentication | yes | yes |
+#       | PasswordAuthentication | yes | no |
+#       | PermitEmptyPasswords | no | no |
+#       | ChallengeResponseAuthentication | yes | no |
+#       | GSSAPIAuthentication | yes | no |
+#       | UsePAM | yes | yes |
+#       | UseDNS | yes | no |
 #
 #       - only use Public Key Authentication .
 #       - enable to login as Root directly .
 #     - generate SSH key pair .
-#   3.  and never repeated .
+#   3.  install Slackbot ( Hubot Slack adapter ) .
+#     - install daemonized Hubot .
+#   4.  and never repeated .
 
 ###
 # variable
@@ -58,7 +63,7 @@ if ! declare -p ssh_keygen_options >/dev/null 2>&1; then declare -r ssh_keygen_o
 # start .
 if declare -p indent >/dev/null 2>&1; then indent="${indent}\xF0\x9F\x91\xB6"; else declare indent='\xF0\x9F\x91\xBB\xF0\x9F\x91\xB6'; fi
 
-declare -r script_path=${repo_url}/configuration/el8
+declare -r script_path=${repo_url}/configuration
 
 ###
 # Prerequirement

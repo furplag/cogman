@@ -3,7 +3,7 @@ set -ue -o pipefail
 export LC_ALL=C
 
 ###
-# el8.startup.sh
+# el.startup.sh
 # https://github.com/furplag/cogman
 # Copyright 2019+ furplag
 # Licensed under MIT (https://github.com/furplag/cogman/blob/main/LICENSE)
@@ -21,20 +21,25 @@ export LC_ALL=C
 #     - Firewall setting (firewalld) .
 #     - SSH port number setting (sshd) .
 #
-#       | setting | change to |
-#       |----|----|
-#       | Port | the port number you  decide to change . |
-#       | PermitRootLogin | without-password |
-#       | PubkeyAuthentication | yes |
-#       | PasswordAuthentication | no |
-#       | PermitEmptyPasswords | no |
-#       | ChallengeResponseAuthentication | no |
-#       | GSSAPIAuthentication | no |
+#       | setting | default | change to |
+#       |----|----|----|
+#       | AddressFamily | any | inet (v4 only) |
+#       | Port | 22 | the port number you decide to change . |
+#       | PermitRootLogin | no | without-password |
+#       | PubkeyAuthentication | yes | yes |
+#       | PasswordAuthentication | yes | no |
+#       | PermitEmptyPasswords | no | no |
+#       | ChallengeResponseAuthentication | yes | no |
+#       | GSSAPIAuthentication | yes | no |
+#       | UsePAM | yes | yes |
+#       | UseDNS | yes | no |
 #
 #       - only use Public Key Authentication .
 #       - enable to login as Root directly .
 #     - generate SSH key pair .
-#   3.  and never repeated .
+#   3.  install Slackbot ( Hubot Slack adapter ) .
+#     - install daemonized Hubot .
+#   4.  and never repeated .
 # 2.  Server startup notification .
 #     you can receive notification of server startup using IFTTT webhook API .
 #     1. Create IFTTT like that as below .
@@ -59,8 +64,8 @@ if ! declare -p ssh_keygen_options >/dev/null 2>&1; then declare -r ssh_keygen_o
 # vars of server status notification
 if ! declare -p ifttt_api_key >/dev/null 2>&1; then declare -r ifttt_api_key=; fi
 
-if ! declare -p platform >/dev/null 2>&1; then declare -r platform='Unknown'; fi
-if ! declare -p project >/dev/null 2>&1; then declare -r project='Unknown'; fi
+if ! declare -p platform >/dev/null 2>&1; then declare -r platform='unknown'; fi
+if ! declare -p project >/dev/null 2>&1; then declare -r project='unknown'; fi
 if ! declare -p instance >/dev/null 2>&1; then declare -r instance="$(hostname)"; fi
 
 # vars of server status notification using Slack and HUBOT
@@ -79,7 +84,7 @@ if ! declare -p slackbot_hubot_owner >/dev/null 2>&1; then declare -r slackbot_h
 source <(curl "${repo_url}/configuration/misc.sh" -fLs);
 
 # Server initial setting (do only first time) .
-if ! did_we_have_done; then source <(curl "${repo_url}/el8.initialize.sh" -fLsS); fi
+if ! did_we_have_done; then source <(curl "${repo_url}/el.initialize.sh" -fLsS); fi
 
 # Server startup notification .
 if [[ -z ${ifttt_api_key} ]]; then echo -e "${indent}\xF0\x9F\x8D\xA3  : ${platform}:${project}:${instance} start ."
