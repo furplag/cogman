@@ -61,12 +61,13 @@ if ! declare -p ssh_port_number >/dev/null 2>&1; then declare -r ssh_port_number
 if ! declare -p ssh_key_passphrase >/dev/null 2>&1; then declare -r ssh_key_passphrase=; fi
 if ! declare -p ssh_keygen_options >/dev/null 2>&1; then declare -r ssh_keygen_options='-t ed25519'; fi
 
-# vars of server status notification
+# vars of server status notification using IFTTT
 if ! declare -p ifttt_api_key >/dev/null 2>&1; then declare -r ifttt_api_key=; fi
-
 if ! declare -p platform >/dev/null 2>&1; then declare -r platform='unknown'; fi
 if ! declare -p project >/dev/null 2>&1; then declare -r project='unknown'; fi
 if ! declare -p instance >/dev/null 2>&1; then declare -r instance="$(hostname)"; fi
+if ! declare -p eventName >/dev/null 2>&1; then declare -r eventName='statechanged'; fi
+if ! declare -p status >/dev/null 2>&1; then declare -r status='startup'; fi
 
 # vars of server status notification using Slack and HUBOT
 if ! declare -p slackbot_user >/dev/null 2>&1; then declare -r slackbot_user='shockwave'; fi

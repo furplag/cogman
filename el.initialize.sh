@@ -104,9 +104,8 @@ else echo -e "${indent}\xF0\x9F\x94\x90\xF0\x9F\x8D\xA5: SSH key already generat
 
 # install slackbot .
 if do_we_have_to_do 'slackbot'; then echo -e "${indent}\xF0\x9F\x94\x90  : install slackbot ...";
-  source <(curl ${script_path}/slackbot-cogman.sh -LfsS)
-  if systemctl status slackbot-cogman >/dev/null 2>&1; then do_config_completed 'slackbot'; fi
-else echo -e "${indent}\xF0\x9F\x94\x90\xF0\x9F\x8D\xA5: Slackbot deamonized, running named as \"slackbot-cogman\" ."; fi
+  if source <(curl ${script_path}/slackbot-cogman.sh -LfsS); then do_config_completed 'slackbot'; fi
+elif systemctl status slackbot-cogman >/dev/null 2>&1; then echo -e "${indent}\xF0\x9F\x94\x90\xF0\x9F\x8D\xA5: Slackbot already deamonized, and running named as \"slackbot-cogman\" ."; fi
 
 # and never repeated .
 echo -e "# ${we_have_done}\n\nexport INIT_CONFIG_INITIALIZED=${INIT_CONFIG_INITIALIZED}\n" >"${we_have_done}"

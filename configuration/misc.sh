@@ -19,7 +19,12 @@ if ! declare -p init_configs >/dev/null 2>&1; then declare -r init_configs='loca
 if [[ -f "${we_have_done}" ]]; then source "${we_have_done}"; fi
 if ! env | grep INIT_CONFIG_INITIALIZED; then INIT_CONFIG_INITIALIZED=; fi
 
+cat <<_EOT_>"${we_have_done}"
+
 export INIT_CONFIG_INITIALIZED=${INIT_CONFIG_INITIALIZED}
+
+_EOT_
+if [[ -f "${we_have_done}" ]]; then source "${we_have_done}"; fi
 
 ###
 # just a shorthand .
@@ -59,6 +64,9 @@ function do_config_completed() {
     local -ar _initialized=($(echo ${INIT_CONFIG_INITIALIZED} | sed -e 's/,/\n/g' | sort))
     INIT_CONFIG_INITIALIZED="$(echo "${_initialized[@]}" | sed -e 's/^ \+//' -e 's/ \+/,/g')"
 
+
+
     export INIT_CONFIG_INITIALIZED=${INIT_CONFIG_INITIALIZED}
+
   fi
 }

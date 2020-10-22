@@ -25,7 +25,7 @@ function _set_timezone() {
   local -r _current=$(timedatectl status | grep zone | sed -e 's/^.*zone: \+//' -e 's/ .*$//')
   local -r _indent="${indent}\xF0\x9F\x97\xBA"
 
-  if [[ -z ${_timezone} ]]; then echo -e "${_indent}\xF0\x9F\x91\xBB: the value of \"timezone\" not spacified ( timezone: ${_current} ) ."
+  if [[ -z ${_timezone} ]]; then echo -e "${_indent}\xF0\x9F\x91\xBB: the value of \"timezone\" not spacified ( current setting: ${_current} ) ."
   elif [[ ${_timezone} = ${_current} ]]; then echo -e "${_indent}\xF0\x9F\x8D\xA5: system time zone already set to \"${_timezone}\" .";
   elif [[ $(timedatectl list-timezones | grep -E "^${_timezone}$" | wc -l) -lt 1 ]]; then
     echo -e "${_indent}\xF0\x9F\x91\xBA: the value of \"timezone\": \"${_timezone}\" does not listed in valid timezones ."
@@ -33,7 +33,8 @@ function _set_timezone() {
     echo -e "${_indent}\xF0\x9F\x8D\xA3: change system time zone \"${_current}\" to \"${_timezone}\" ."
   else echo -e "${_indent}\xF0\x9F\x91\xB9: initialization failed, should set time zone manually ."; fi
 
-  if [[ -z ${_timezone} || $(timedatectl status | grep zone | sed -e 's/^.*zone: \+//' -e 's/ .*$//') = ${_timezone} ]]; then return 0; else return 1; fi
+  if [[ -z "${_timezone:-}" ]]; then return 1;
+  elif [[ "$(timedatectl status | grep zone | sed -e 's/^.*zone: \+//' -e 's/ .*$//')" = "${_timezone}" ]]; then return 0; else return 1; fi
 }
 
 _set_timezone "${1:-}"
