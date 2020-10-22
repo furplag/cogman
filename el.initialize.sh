@@ -83,8 +83,7 @@ else echo -e "${indent}\xF0\x9F\x92\xAC\xF0\x9F\x8D\xA5: system locale already s
 
 # l10N (Timezone) setting .
 if do_we_have_to_do 'timezone'; then echo -e "${indent}\xF0\x9F\x97\xBA  : setting l10N (Timezone) ...";
-  if bash -c "curl ${script_path}/timezone.sh -LfsS | bash -s ${timezone}"; then do_config_completed 'timezone';
-  else echo -e "@@@ $(timedatectl status | grep zone | sed -e 's/^.*zone: \+//' -e 's/ .*$//'):${timezone} @@@"; fi
+  if bash -c "curl ${script_path}/timezone.sh -LfsS | bash -s ${timezone}"; then do_config_completed 'timezone'; fi
 else echo -e "${indent}\xF0\x9F\x97\xBA\xF0\x9F\x8D\xA5: system Timezone already set to \"${timezone}\" ."; fi
 
 # Unforcing SELinux .
