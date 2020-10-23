@@ -17,8 +17,8 @@ export LC_ALL=C
 # variable
 if ! declare -p indent >/dev/null 2>&1; then declare indent='\xF0\x9F\x91\xBB\xF0\x9F\x91\xB6'; fi
 
-if ! declare -p platform >/dev/null 2>&1; then declare -r platform='Unknown'; fi
-if ! declare -p project >/dev/null 2>&1; then declare -r project='Unknown'; fi
+if ! declare -p platform >/dev/null 2>&1; then declare -r platform='unknown'; fi
+if ! declare -p project >/dev/null 2>&1; then declare -r project='unknown'; fi
 if ! declare -p instance >/dev/null 2>&1; then declare -r instance="$(hostname)"; fi
 
 if ! declare -p slackbot_user >/dev/null 2>&1; then declare -r slackbot_user='cogman'; fi
@@ -56,7 +56,7 @@ function _validate() {
 
   for _var in 'slackbot_group' 'slackbot_user' 'slackbot_uid' 'slackbot_hubot_token'; do
     if _is_empty $_var; then
-      echo -e "${_indent}\xF0\x9F\x91\xBA: there is no value in \"\$${_var}\" ."
+      echo -e "${_indent}\xF0\x9F\x91\xBB: the value of \"\$${_var}\" not spacified ."
       _result=1
       break
     fi

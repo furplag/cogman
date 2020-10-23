@@ -58,11 +58,12 @@ if ! declare -p indent >/dev/null 2>&1; then declare indent='\xF0\x9F\x91\xBB'; 
 if ! declare -p locale_lang >/dev/null 2>&1; then declare -r locale_lang=; fi
 if ! declare -p timezone >/dev/null 2>&1; then declare -r timezone=; fi
 if ! declare -p ssh_port_number >/dev/null 2>&1; then declare -r ssh_port_number=; fi
+if ! declare -p ssh_config_options >/dev/null 2>&1; then declare -r ssh_config_options=; fi
 if ! declare -p ssh_key_passphrase >/dev/null 2>&1; then declare -r ssh_key_passphrase=; fi
 if ! declare -p ssh_keygen_options >/dev/null 2>&1; then declare -r ssh_keygen_options='-t ed25519'; fi
 
 # vars of server status notification using IFTTT
-if ! declare -p ifttt_api_key >/dev/null 2>&1; then declare -r ifttt_api_key=; fi
+if ! declare -p ifttt_api_key >/dev/null 2>&1; then declare -r ifttt_api_key=${IFTTT_API_KEY:-}; fi
 if ! declare -p platform >/dev/null 2>&1; then declare -r platform='unknown'; fi
 if ! declare -p project >/dev/null 2>&1; then declare -r project='unknown'; fi
 if ! declare -p instance >/dev/null 2>&1; then declare -r instance="$(hostname)"; fi

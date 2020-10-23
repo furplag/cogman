@@ -39,8 +39,7 @@ function _set_locale() {
     echo -e "${_indent}\xF0\x9F\x8D\xA3: change system locale \"${_current}\" to \"${_lang}\" ."
   else echo -e "${_indent}\xF0\x9F\x91\xB9: \"${1:-}\" does not listed in valid locale ."; fi
 
-  if [[ -z "${_lang:-}" ]]; then return 1;
-  elif [[ "$(localectl status | grep LANG= | sed -e 's/^.*LANG=\(.\+\)\s\?$/\1/')" = ${_lang} ]]; then return 0; else return 1; fi
+  if [[ "$(localectl status | grep LANG= | sed -e 's/^.*LANG=\(.\+\)\s\?$/\1/')" = ${_lang:-_current} ]]; then return 0; else return 1; fi
 }
 
 _set_locale "${1:-}"

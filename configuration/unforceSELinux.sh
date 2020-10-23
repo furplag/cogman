@@ -23,7 +23,7 @@ function _unforcing_selinux() {
 
   if echo "${_permanent:-Disabled}" | grep -vEi ^E /dev/null 2>&1; then
     echo -e "${_indent}\xF0\x9F\x8D\xA5: SELinux already unforced ( config: ${_permanent}, current setting: ${_current} ) .";
-  elif sed -i -e 's/^SELINUX=.*/SELINUX=Permissive\n#\0/' /etc/selinux/config; then echo -e "${_indent}\xF0\x9F\x8D\xA3: SELinux unforced ( current setting: ${_current} ) .";
+  elif sed -i -e 's/^SELINUX=.*/SELINUX=Permissive\n#\0/' /etc/selinux/config; then echo -e "${_indent}\xF0\x9F\x8D\xA3: SELinux unforced ( config: $(grep -Ei ^SELINUX\=[^\s]+ /etc/selinux/config | sed -e 's/.*=//'), current setting: ${_current} ) .";
   else echo -e "${_indent}\xF0\x9F\x91\xB9: initialization failed, should change mode of SELinux another way ."; fi
 
   if grep -vEi '^SELINUX\=E' /etc/selinux/config >/dev/null 2>&1; then return 0; else return 1; fi
