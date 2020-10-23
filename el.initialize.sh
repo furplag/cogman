@@ -160,4 +160,4 @@ if [[ -n "${INIT_CONFIG_INITIALIZED:-}" ]]; then
 fi
 
 # end .
-indent="$(echo ${indent} | sed -e "s/${symbols['initialize']}//")"
+indent="$(echo -e ${indent} | sed -e "s/${symbols['initialize']}//")"

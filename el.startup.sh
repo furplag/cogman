@@ -72,7 +72,7 @@ fi
 if ! declare -p repo_url >/dev/null 2>&1; then declare -r repo_url='https://raw.githubusercontent.com/furplag/cogman/main'; fi
 if ! declare -p we_have_done >/dev/null 2>&1; then declare -r we_have_done='/etc/profile.d/cogman.initialized.sh'; fi
 if ! declare -p init_configs >/dev/null 2>&1; then declare -r init_configs='locale selinux slackbot ssh sshkey timezone'; fi
-if ! declare -p indent >/dev/null 2>&1; then declare indent='${symbols['cogman']}'; fi
+if ! declare -p indent >/dev/null 2>&1; then declare indent="${symbols['cogman']}"; fi
 
 # vars of server initialization
 if ! declare -p locale_lang >/dev/null 2>&1; then declare -r locale_lang=; fi
@@ -110,12 +110,12 @@ if ! did_we_have_done; then source <(curl "${repo_url}/el.initialize.sh" -fLsS);
 
 # Server startup notification .
 if [[ -z ${ifttt_api_key} ]]; then
-  echo -e "${indent}${symbols['success']}  : ${eventName}/${status}"
-  echo -e "${indent}${symbols['success']}  : Platform: ${platform}"
-  echo -e "${indent}${symbols['success']}  : Project : ${project}"
-  echo -e "${indent}${symbols['success']}  : Instance: ${instance}"
+  echo -e "${indent}${symbols['success']}    : ${eventName}/${status}"
+  echo -e "${indent}      : Platform: ${platform}"
+  echo -e "${indent}      : Project : ${project}"
+  echo -e "${indent}      : Instance: ${instance}"
 elif ! bash -c "curl ${repo_url}/notification/ifttt.webhook.sh -LfsS | bash -s \"${ifttt_api_key}\" \"${eventName}\" \"${status}\" \"${platform}/${project}\" \"${instance}\""; then
-  echo -e "${indent}${symbols['fatal']}  : server startup notification (IFTTT webhook) failed .";
+  echo -e "${indent}${symbols['fatal']}    : server startup notification (IFTTT webhook) failed .";
 fi
 
 # end .
