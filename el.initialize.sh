@@ -47,19 +47,20 @@ export LC_ALL=C
 # variable
 if ! declare -p symbols >/dev/null 2>&1; then
   declare -Ar symbols=(
-    ["slackbot"]='\xF0\x9F\x91\xBB'
-    ["locale"]='\xF0\x9F\x92\xAC'
-    ["selinux"]='\xF0\x9F\x92\x82'
     ["cogman"]='\xF0\x9F\xA4\x96'
+    ["initialize"]='\xF0\x9F\x91\xB6'
+    ["locale"]='\xF0\x9F\x92\xAC'
+    ["timezone"]='\xF0\x9F\x8C\x90'
+    ["selinux"]='\xF0\x9F\x92\x82'
     ["ssh"]='\xE2\x9A\xA1'
     ["sshkey"]='\xF0\x9F\x94\x90'
-    ["timezone"]='\xF0\x9F\x8C\x90'
-    ["completed"]='\xF0\x9F\x8D\xA5'
+    ["slackbot"]='\xF0\x9F\x91\xBB'
     ["success"]='\xF0\x9F\x8D\xA3'
     ["error"]='\xF0\x9F\x91\xBA'
     ["fatal"]='\xF0\x9F\x91\xB9'
-    ["initialize"]='\xF0\x9F\x91\xB6'
-    ["ignore"]='\xF0\x9F\x99\x89'
+    ["ignore"]='\xF0\x9F\x8D\xA5'
+    ["unspecified"]='\xF0\x9F\x99\x89'
+    ["remark"]='\xF0\x9F\x91\xBE'
   )
 fi
 if ! declare -p repo_url >/dev/null 2>&1; then declare -r repo_url='https://raw.githubusercontent.com/furplag/cogman/main'; fi
@@ -85,12 +86,12 @@ if ! declare -p slackbot_user >/dev/null 2>&1; then declare -r slackbot_user=; f
 if ! declare -p slackbot_group >/dev/null 2>&1; then declare -r slackbot_group=; fi
 if ! declare -p slackbot_uid >/dev/null 2>&1; then declare -ir slackbot_uid=; fi
 if ! declare -p slackbot_gid >/dev/null 2>&1; then declare -ir slackbot_gid=; fi
-if ! declare -p slackbot_hubot_token >/dev/null 2>&1; then declare -r slackbot_hubot_token=; fi
-if ! declare -p slackbot_hubot_domain >/dev/null 2>&1; then declare -r slackbot_hubot_domain=; fi
-if ! declare -p slackbot_hubot_dir >/dev/null 2>&1; then declare -r slackbot_hubot_dir=; fi
-if ! declare -p slackbot_hubot_name >/dev/null 2>&1; then declare -r slackbot_hubot_name=; fi
-if ! declare -p slackbot_hubot_desc >/dev/null 2>&1; then declare -r slackbot_hubot_desc=; fi
-if ! declare -p slackbot_hubot_owner >/dev/null 2>&1; then declare -r slackbot_hubot_owner=; fi
+if ! declare -p hubot_slack_token >/dev/null 2>&1; then declare -r hubot_slack_token=; fi
+if ! declare -p hubot_owner_domain >/dev/null 2>&1; then declare -r hubot_owner_domain=; fi
+if ! declare -p hubot_home >/dev/null 2>&1; then declare -r hubot_home=; fi
+if ! declare -p hubot_name >/dev/null 2>&1; then declare -r hubot_name=; fi
+if ! declare -p hubot_desc >/dev/null 2>&1; then declare -r hubot_desc=; fi
+if ! declare -p hubot_owner >/dev/null 2>&1; then declare -r hubot_owner=; fi
 
 # start .
 if declare -p indent >/dev/null 2>&1; then indent="${indent}${symbols['initialize']}"; else declare indent="${symbols['cogman']}${symbols['initialize']}"; fi
@@ -142,7 +143,7 @@ else echo -e "${indent}${symbols['sshkey']}${symbols['ignore']}: SSH key already
 
 # install slackbot .
 if do_we_have_to_do 'slackbot'; then echo -e "${indent}${symbols['slackbot']}  : install slackbot ...";
-  if [[ -z "${slackbot_hubot_token:-}" ]]; then do_config_completed 'slackbot'; echo -e "${indent}${symbols['slackbot']}${symbols['unspecified']}: the value of \"slackbot_hubot_token\" not spacified .";
+  if [[ -z "${slackbot_hubot_token:-}" ]]; then do_config_completed 'slackbot'; echo -e "${indent}${symbols['slackbot']}${symbols['unspecified']}${symbols['error']}: the value of \"slackbot_hubot_token\" not spacified .";
   elif source <(curl ${script_path}/slackbot-cogman.sh -LfsS); then do_config_completed 'slackbot'; fi
 elif systemctl status slackbot-cogman >/dev/null 2>&1; then echo -e "${indent}${symbols['slackbot']}${symbols['ignore']}: Slackbot already deamonized, and running named as \"slackbot-cogman\" .";
 elif [[ -n "${slackbot_hubot_token:-}" ]] && source <(curl ${script_path}/slackbot-cogman.sh -LfsS); then do_config_completed 'slackbot';

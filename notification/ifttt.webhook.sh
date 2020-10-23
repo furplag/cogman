@@ -40,7 +40,7 @@ function _ifttt_webhook() {
   if [[ -z ${1:-} ]] || [[ -z ${2:-} ]]; then echo "empty 1:${1:-} 2:${2:-}";
   elif curl -X POST "${webhook_url}/${2}/with/key/${1}" \
     -H "Content-Type: application/json" \
-    -d "{\"value1\":\"${3:-}\",\"value2\":\"${4:-}\",\"value3\":\"${5:-}\"}" -LfsS; then _result=0; fi
+    -d "{\"value1\":\"${3:-}\",\"value2\":\"${4:-}\",\"value3\":\"${5:-}\"}" -LfsS 1>/dev/null; then _result=0; fi
 
   return ${_result}
 }
