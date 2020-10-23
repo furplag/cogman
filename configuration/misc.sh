@@ -17,12 +17,9 @@ if ! declare -p we_have_done >/dev/null 2>&1; then declare -r we_have_done='/etc
 if ! declare -p init_configs >/dev/null 2>&1; then declare -r init_configs='locale selinux slackbot ssh sshkey timezone'; fi
 
 if [[ -f "${we_have_done}" ]]; then source "${we_have_done}"; fi
-if ! env | grep INIT_CONFIG_INITIALIZED; then INIT_CONFIG_INITIALIZED=; fi
-
+if ! env | grep INIT_CONFIG_INITIALIZED >/dev/null 2>&1; then INIT_CONFIG_INITIALIZED=; fi
 cat <<_EOT_>"${we_have_done}"
-
 export INIT_CONFIG_INITIALIZED=${INIT_CONFIG_INITIALIZED}
-
 _EOT_
 if [[ -f "${we_have_done}" ]]; then source "${we_have_done}"; fi
 
