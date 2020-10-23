@@ -69,8 +69,6 @@ if ! declare -p symbols >/dev/null 2>&1; then
     ["remark"]='\xF0\x9F\x91\xBE'
   )
 fi
-for k in $(echo ${!symbols[@]} | sed -e 's/ /\n/g' | sort); do echo -e "[$k]=\"${symbols[$k]}\""; done ; exit 0
-
 if ! declare -p repo_url >/dev/null 2>&1; then declare -r repo_url='https://raw.githubusercontent.com/furplag/cogman/main'; fi
 if ! declare -p we_have_done >/dev/null 2>&1; then declare -r we_have_done='/etc/profile.d/cogman.initialized.sh'; fi
 if ! declare -p init_configs >/dev/null 2>&1; then declare -r init_configs='locale selinux slackbot ssh sshkey timezone'; fi

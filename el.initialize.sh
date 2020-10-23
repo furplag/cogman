@@ -62,8 +62,6 @@ if ! declare -p symbols >/dev/null 2>&1; then
     ["ignore"]='\xF0\x9F\x99\x89'
   )
 fi
-
-
 if ! declare -p repo_url >/dev/null 2>&1; then declare -r repo_url='https://raw.githubusercontent.com/furplag/cogman/main'; fi
 if ! declare -p we_have_done >/dev/null 2>&1; then declare -r we_have_done='/etc/profile.d/cogman.initialized.sh'; fi
 
