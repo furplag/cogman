@@ -143,10 +143,10 @@ else echo -e "${indent}${symbols['sshkey']}${symbols['ignore']}: SSH key already
 
 # install slackbot .
 if do_we_have_to_do 'slackbot'; then echo -e "${indent}${symbols['slackbot']}  : install slackbot ...";
-  if [[ -z "${slackbot_hubot_token:-}" ]]; then do_config_completed 'slackbot'; echo -e "${indent}${symbols['slackbot']}${symbols['unspecified']}${symbols['error']}: the value of \"slackbot_hubot_token\" not spacified .";
+  if [[ -z "${hubot_slack_token:-}" ]]; then do_config_completed 'slackbot'; echo -e "${indent}${symbols['slackbot']}${symbols['unspecified']}: the value of \"slackbot_hubot_token\" not spacified .";
   elif source <(curl ${script_path}/slackbot-cogman.sh -LfsS); then do_config_completed 'slackbot'; fi
 elif systemctl status slackbot-cogman >/dev/null 2>&1; then echo -e "${indent}${symbols['slackbot']}${symbols['ignore']}: Slackbot already deamonized, and running named as \"slackbot-cogman\" .";
-elif [[ -n "${slackbot_hubot_token:-}" ]] && source <(curl ${script_path}/slackbot-cogman.sh -LfsS); then do_config_completed 'slackbot';
+elif [[ -n "${hubot_slack_token:-}" ]] && source <(curl ${script_path}/slackbot-cogman.sh -LfsS); then do_config_completed 'slackbot';
 else do_config_completed 'slackbot'; echo -e "${indent}${symbols['slackbot']}${symbols['ignore']}: there is NO Slackbot ."; fi
 
 # and never repeated .
