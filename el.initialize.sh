@@ -122,7 +122,7 @@ else echo -e "${indent}\xF0\x9F\x94\x90\xF0\x9F\x8D\xA5: SSH key already generat
 
 # install slackbot .
 if do_we_have_to_do 'slackbot'; then echo -e "${indent}\xF0\x9F\x94\x90  : install slackbot ...";
-  if [[ -z "${slackbot_hubot_token:-}" ]]; then do_config_completed 'slackbot'; echo "${indent}\xF0\x9F\x94\x90\xF0\x9F\x91\xBB: the value of \"slackbot_hubot_token\" not spacified .";
+  if [[ -z "${slackbot_hubot_token:-}" ]]; then do_config_completed 'slackbot'; echo -e "${indent}\xF0\x9F\x94\x90\xF0\x9F\x91\xBB: the value of \"slackbot_hubot_token\" not spacified .";
   elif source <(curl ${script_path}/slackbot-cogman.sh -LfsS); then do_config_completed 'slackbot'; fi
 elif systemctl status slackbot-cogman >/dev/null 2>&1; then echo -e "${indent}\xF0\x9F\x94\x90\xF0\x9F\x8D\xA5: Slackbot already deamonized, and running named as \"slackbot-cogman\" ."; fi
 
@@ -131,7 +131,7 @@ echo -e "# ${we_have_done}\n\nexport INIT_CONFIG_INITIALIZED=${INIT_CONFIG_INITI
 
 # result .
 if [[ -n "${INIT_CONFIG_INITIALIZED:-}" ]]; then
-  local -Ar symbols=(
+  -Ar symbols=(
     ["locale"]='\xF0\x9F\x92\xAC'
     ["selinux"]='\xF0\x9F\x92\x82'
     ["slackbot"]='\xF0\x9F\x94\x90'
