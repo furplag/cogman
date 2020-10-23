@@ -110,7 +110,7 @@ else echo -e "${indent}\xF0\x9F\x92\x82\xF0\x9F\x8D\xA5: SELinux already unforce
 if do_we_have_to_do 'ssh'; then echo -e "${indent}\xE2\x9A\xA1  : change SSH port number for protect under crack ...";
   if bash -c "curl ${script_path}/ssh.modify.sh -LfsS | bash -s -- \"${ssh_port_number}\" \"${ssh_config_options}\""; then do_config_completed 'ssh'; fi
 else
-  local -a _current_ports=(`grep -Ei '^Port' /etc/ssh/sshd_config | grep -Eo '[0-9]+' 2>/dev/null`)
+  -a _current_ports=(`grep -Ei '^Port' /etc/ssh/sshd_config | grep -Eo '[0-9]+' 2>/dev/null`)
   if [[ ${#_current_ports[*]} -lt 1 ]]; then _current_ports=(22); fi
   echo -e "${indent}\xE2\x9A\xA1\xF0\x9F\x8D\xA5: SSH daemon running with port number(s) \"${_current_ports}\", already .";
 fi
