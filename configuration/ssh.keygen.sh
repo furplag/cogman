@@ -14,7 +14,7 @@ export LC_ALL=C
 ###
 # variable
 if ! declare -p indent >/dev/null 2>&1; then declare indent='\xF0\x9F\x91\xBB\xF0\x9F\x91\xB6'; fi
-
+if declare -p symbols >/dev/null 2>&1; then echo $symbols['ssh']; fi
 ###
 # function
 
@@ -60,9 +60,9 @@ function _ssh_keygen() {
       chmod -R 400 ${_dir}/*.key
 
       echo -e "${_indent}\xF0\x9F\x91\xBE: Remember that, the passphrase is: \"${_ssh_key_passphrase}\" ."
-      echo -e '# \xF0\x9F\xA6\x95 \xF0\x9F\xA6\x96 ssh.private.key \xF0\x9F\xA6\x95 \xF0\x9F\xA6\x96'
+      echo -e "${_indent}\xF0\x9F\x91\xBE: \xF0\x9F\x99\x88\xF0\x9F\x99\x8A\xF0\x9F\x99\x89   MAKE IT NOTE OF BELOW, AND   \xF0\x9F\x99\x89\xF0\x9F\x99\x8A\xF0\x9F\x99\x88"
       cat ${_dir}/${_prefix}.private.key
-      echo -e '# \xF0\x9F\xA6\x95 \xF0\x9F\xA6\x96 ssh.private.key \xF0\x9F\xA6\x95 \xF0\x9F\xA6\x96'
+      echo -e "${_indent}\xF0\x9F\x91\xBE: \xF0\x9F\x99\x88\xF0\x9F\x99\x8A\xF0\x9F\x99\x89 PLEASE KEEP IT IN A SAFE PLACE \xF0\x9F\x99\x89\xF0\x9F\x99\x8A\xF0\x9F\x99\x88"
       _result=0;
     else echo -e "${_indent}\xF0\x9F\x91\xB9: initialization failed, should generate SSH key pair another way ."; fi
   fi

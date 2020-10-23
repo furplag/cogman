@@ -45,6 +45,25 @@ export LC_ALL=C
 
 ###
 # variable
+if ! declare -p symbols >/dev/null 2>&1; then
+  declare -Ar symbols=(
+    ["slackbot"]='\xF0\x9F\x91\xBB'
+    ["locale"]='\xF0\x9F\x92\xAC'
+    ["selinux"]='\xF0\x9F\x92\x82'
+    ["cogman"]='\xF0\x9F\xA4\x96'
+    ["ssh"]='\xE2\x9A\xA1'
+    ["sshkey"]='\xF0\x9F\x94\x90'
+    ["timezone"]='\xF0\x9F\x8C\x90'
+    ["completed"]='\xF0\x9F\x8D\xA5'
+    ["success"]='\xF0\x9F\x8D\xA3'
+    ["error"]='\xF0\x9F\x91\xBA'
+    ["fatal"]='\xF0\x9F\x91\xB9'
+    ["initialize"]='\xF0\x9F\x91\xB6'
+    ["ignore"]='\xF0\x9F\x99\x89'
+  )
+fi
+
+
 if ! declare -p repo_url >/dev/null 2>&1; then declare -r repo_url='https://raw.githubusercontent.com/furplag/cogman/main'; fi
 if ! declare -p we_have_done >/dev/null 2>&1; then declare -r we_have_done='/etc/profile.d/cogman.initialized.sh'; fi
 
@@ -76,7 +95,7 @@ if ! declare -p slackbot_hubot_desc >/dev/null 2>&1; then declare -r slackbot_hu
 if ! declare -p slackbot_hubot_owner >/dev/null 2>&1; then declare -r slackbot_hubot_owner=; fi
 
 # start .
-if declare -p indent >/dev/null 2>&1; then indent="${indent}\xF0\x9F\x91\xB6"; else declare indent='\xF0\x9F\x91\xBB\xF0\x9F\x91\xB6'; fi
+if declare -p indent >/dev/null 2>&1; then indent="${indent}${symbols['initialize']}"; else declare indent="${symbols['cogman']}${symbols['initialize']}"; fi
 
 declare -r script_path=${repo_url}/configuration
 
@@ -85,65 +104,62 @@ declare -r script_path=${repo_url}/configuration
 #
 # all commands need you are "root" or you listed in "wheel" .
 [[ ${EUID:-${UID}} -ne 0 ]] && [[ $(id -u) -ne 0 ]] && \
-  echo -e "${indent}\xF0\x9F\x91\xB9: this script must have to run as Root user .\n${indent}\xF0\x9F\x91\xB9: Hint: sudo ${0} ." && exit 1
+  echo -e "${indent}${symbols['fatal']}: this script must have to run as Root user .\n${indent}${symbols['fatal']}: Hint: sudo ${0} ." && exit 1
+
+# load ./misc.sh .
+if ! misc_available >/dev/null 2>&1; then source <(curl "${repo_url}/configuration/misc.sh" -fLs); fi
 
 ###
 # functions
 echo -e "${indent}    : start processing to server initialize ..."
 
 # i18N (Locale / Language) setting .
-if do_we_have_to_do 'locale'; then echo -e "${indent}\xF0\x9F\x92\xAC  : setting i18N (Locale / Language) ...";
+if do_we_have_to_do 'locale'; then echo -e "${indent}${symbols['locale']}  : setting i18N (Locale / Language) ...";
   if bash -c "curl ${script_path}/locale.sh -LfsS | bash -s ${locale_lang}"; then do_config_completed 'locale'; fi
-else echo -e "${indent}\xF0\x9F\x92\xAC\xF0\x9F\x8D\xA5: system locale already set to \"$(locale | grep -E ^LANG= | sed -e 's/LANG=//')\" ."; fi
+else echo -e "${indent}${symbols['locale']}${symbols['ignore']}: system locale already set to \"$(locale | grep -E ^LANG= | sed -e 's/LANG=//')\" ."; fi
 
 # l10N (Timezone) setting .
-if do_we_have_to_do 'timezone'; then echo -e "${indent}\xF0\x9F\x8C\x90  : setting l10N (Timezone) ...";
+if do_we_have_to_do 'timezone'; then echo -e "${indent}${symbols['timezone']}  : setting l10N (Timezone) ...";
   if bash -c "curl ${script_path}/timezone.sh -LfsS | bash -s ${timezone}"; then do_config_completed 'timezone'; fi
-else echo -e "${indent}\xF0\x9F\x8C\x90\xF0\x9F\x8D\xA5: system Timezone already set to \"$(timedatectl status | grep zone | sed -e 's/^.*zone: \+//' -e 's/ .*$//')\" ."; fi
+else echo -e "${indent}${symbols['timezone']}${symbols['ignore']}: system Timezone already set to \"$(timedatectl status | grep zone | sed -e 's/^.*zone: \+//' -e 's/ .*$//')\" ."; fi
 
 # Unforcing SELinux .
-if do_we_have_to_do 'selinux'; then echo -e "${indent}\xF0\x9F\x92\x82  : unforcing SELinux ...";
+if do_we_have_to_do 'selinux'; then echo -e "${indent}${symbols['selinux']}  : unforcing SELinux ...";
   if bash <(curl "${script_path}/unforceSELinux.sh" -LfsS); then do_config_completed 'selinux'; fi
-else echo -e "${indent}\xF0\x9F\x92\x82\xF0\x9F\x8D\xA5: SELinux already unforced ( $(grep -Ei ^SELINUX\=[^\s]+ /etc/selinux/config | sed -e 's/.*=//') ) ."; fi
+else echo -e "${indent}${symbols['selinux']}${symbols['ignore']}: SELinux already unforced ( $(grep -Ei ^SELINUX\=[^\s]+ /etc/selinux/config | sed -e 's/.*=//') ) ."; fi
 
 # change SSH port number for protect under crack .
-if do_we_have_to_do 'ssh'; then echo -e "${indent}\xE2\x9A\xA1  : change SSH port number for protect under crack ...";
+if do_we_have_to_do 'ssh'; then echo -e "${indent}${symbols['ssh']}  : change SSH port number for protect under crack ...";
   if bash -c "curl ${script_path}/ssh.modify.sh -LfsS | bash -s -- \"${ssh_port_number}\" \"${ssh_config_options}\""; then do_config_completed 'ssh'; fi
 else
   declare -a _current_ports=(`grep -Ei '^Port' /etc/ssh/sshd_config | grep -Eo '[0-9]+' 2>/dev/null`)
   if [[ ${#_current_ports[*]} -lt 1 ]]; then _current_ports=(22); fi
-  echo -e "${indent}\xE2\x9A\xA1\xF0\x9F\x8D\xA5: SSH daemon running with port number(s) \"${_current_ports}\", already .";
+  echo -e "${indent}${symbols['ssh']}${symbols['ignore']}: SSH daemon running with port number(s) \"${_current_ports}\", already .";
 fi
 
 # generate SSH key pair .
-if do_we_have_to_do 'sshkey'; then echo -e "${indent}\xF0\x9F\x94\x90  : generate SSH key pair ...";
+if do_we_have_to_do 'sshkey'; then echo -e "${indent}${symbols['sshkey']}  : generate SSH key pair ...";
   if bash -c "curl ${script_path}/ssh.keygen.sh -LfsS | bash -s -- \"${ssh_key_passphrase}\" \"${ssh_keygen_options}\""; then do_config_completed 'sshkey'; fi
-else echo -e "${indent}\xF0\x9F\x94\x90\xF0\x9F\x8D\xA5: SSH key already generated, check out directory \"/root/.ssh\" ."; fi
+else echo -e "${indent}${symbols['sshkey']}${symbols['ignore']}: SSH key already generated, check out directory \"/root/.ssh\" ."; fi
 
 # install slackbot .
-if do_we_have_to_do 'slackbot'; then echo -e "${indent}\xF0\x9F\x94\x90  : install slackbot ...";
-  if [[ -z "${slackbot_hubot_token:-}" ]]; then do_config_completed 'slackbot'; echo -e "${indent}\xF0\x9F\x94\x90\xF0\x9F\x91\xBB: the value of \"slackbot_hubot_token\" not spacified .";
+if do_we_have_to_do 'slackbot'; then echo -e "${indent}${symbols['slackbot']}  : install slackbot ...";
+  if [[ -z "${slackbot_hubot_token:-}" ]]; then do_config_completed 'slackbot'; echo -e "${indent}${symbols['slackbot']}${symbols['unspecified']}: the value of \"slackbot_hubot_token\" not spacified .";
   elif source <(curl ${script_path}/slackbot-cogman.sh -LfsS); then do_config_completed 'slackbot'; fi
-elif systemctl status slackbot-cogman >/dev/null 2>&1; then echo -e "${indent}\xF0\x9F\x94\x90\xF0\x9F\x8D\xA5: Slackbot already deamonized, and running named as \"slackbot-cogman\" ."; fi
+elif systemctl status slackbot-cogman >/dev/null 2>&1; then echo -e "${indent}${symbols['slackbot']}${symbols['ignore']}: Slackbot already deamonized, and running named as \"slackbot-cogman\" .";
+elif [[ -n "${slackbot_hubot_token:-}" ]] && source <(curl ${script_path}/slackbot-cogman.sh -LfsS); then do_config_completed 'slackbot';
+else do_config_completed 'slackbot'; echo -e "${indent}${symbols['slackbot']}${symbols['ignore']}: there is NO Slackbot ."; fi
 
 # and never repeated .
 echo -e "# ${we_have_done}\n\nexport INIT_CONFIG_INITIALIZED=${INIT_CONFIG_INITIALIZED}\n" >"${we_have_done}"
 
 # result .
 if [[ -n "${INIT_CONFIG_INITIALIZED:-}" ]]; then
-  declare -Ar symbols=(
-    ["locale"]='\xF0\x9F\x92\xAC'
-    ["selinux"]='\xF0\x9F\x92\x82'
-    ["slackbot"]='\xF0\x9F\x94\x90'
-    ["ssh"]='\xE2\x9A\xA1'
-    ["sshkey"]='\xF0\x9F\x94\x90'
-    ["timezone"]='\xF0\x9F\x8C\x90'
-  )
   echo -e "${indent}    : server initialization completed:"
-  for completed in $(echo "${INIT_CONFIG_INITIALIZED}" | sed -e 's/,/ /g'); do
-    echo -e "${indent}${symbols[$completed]}  : ${completed}"
+  for completed in $(echo "${INIT_CONFIG_INITIALIZED}" | sed -e 's/,/\n/g' | sort); do
+    echo -e "${indent}    : ${symbols[$completed]} ${completed}"
   done
 fi
 
 # end .
-indent="$(echo ${indent} | sed -e 's/\xF0\x9F\x91\xB6//')"
+indent="$(echo ${indent} | sed -e "s/${symbols['initialize']}//")"

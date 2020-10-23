@@ -36,6 +36,8 @@ export LC_ALL=C
 #
 #       - only use Public Key Authentication .
 #       - enable to login as Root directly .
+#       > you can override SSH setting with option named as "ssh_config_options", like this
+#       > "PasswordAuthentication=yes PermitRootLogin=yes" .
 #     - generate SSH key pair .
 #   3.  install Slackbot ( Hubot Slack adapter ) .
 #     - install daemonized Hubot .
@@ -49,10 +51,30 @@ export LC_ALL=C
 #     >>  See also IFTTT webhook documentation, for more information .
 
 # variable
+if ! declare -p symbols >/dev/null 2>&1; then
+  declare -Ar symbols=(
+    ["cogman"]='\xF0\x9F\xA4\x96'
+    ["initialize"]='\xF0\x9F\x91\xB6'
+    ["locale"]='\xF0\x9F\x92\xAC'
+    ["timezone"]='\xF0\x9F\x8C\x90'
+    ["selinux"]='\xF0\x9F\x92\x82'
+    ["ssh"]='\xE2\x9A\xA1'
+    ["sshkey"]='\xF0\x9F\x94\x90'
+    ["slackbot"]='\xF0\x9F\x91\xBB'
+    ["success"]='\xF0\x9F\x8D\xA3'
+    ["error"]='\xF0\x9F\x91\xBA'
+    ["fatal"]='\xF0\x9F\x91\xB9'
+    ["ignore"]='\xF0\x9F\x8D\xA5'
+    ["unspecified"]='\xF0\x9F\x99\x89'
+    ["remark"]='\xF0\x9F\x91\xBE'
+  )
+fi
+for k in $(echo ${!symbols[@]} | sed -e 's/ /\n/g' | sort); do echo -e "[$k]=\"${symbols[$k]}\""; done ; exit 0
+
 if ! declare -p repo_url >/dev/null 2>&1; then declare -r repo_url='https://raw.githubusercontent.com/furplag/cogman/main'; fi
 if ! declare -p we_have_done >/dev/null 2>&1; then declare -r we_have_done='/etc/profile.d/cogman.initialized.sh'; fi
 if ! declare -p init_configs >/dev/null 2>&1; then declare -r init_configs='locale selinux slackbot ssh sshkey timezone'; fi
-if ! declare -p indent >/dev/null 2>&1; then declare indent='\xF0\x9F\x91\xBB'; fi
+if ! declare -p indent >/dev/null 2>&1; then declare indent='${symbols['cogman']}'; fi
 
 # vars of server initialization
 if ! declare -p locale_lang >/dev/null 2>&1; then declare -r locale_lang=; fi
@@ -68,7 +90,7 @@ if ! declare -p platform >/dev/null 2>&1; then declare -r platform='unknown'; fi
 if ! declare -p project >/dev/null 2>&1; then declare -r project='unknown'; fi
 if ! declare -p instance >/dev/null 2>&1; then declare -r instance="$(hostname)"; fi
 if ! declare -p eventName >/dev/null 2>&1; then declare -r eventName='statechanged'; fi
-if ! declare -p status >/dev/null 2>&1; then declare -r status='startup'; fi
+if ! declare -p status >/dev/null 2>&1; then declare -r status='started'; fi
 
 # vars of server status notification using Slack and HUBOT
 if ! declare -p slackbot_user >/dev/null 2>&1; then declare -r slackbot_user='shockwave'; fi
@@ -89,9 +111,14 @@ source <(curl "${repo_url}/configuration/misc.sh" -fLs);
 if ! did_we_have_done; then source <(curl "${repo_url}/el.initialize.sh" -fLsS); fi
 
 # Server startup notification .
-if [[ -z ${ifttt_api_key} ]]; then echo -e "${indent}\xF0\x9F\x8D\xA3  : ${platform}:${project} ${eventName}/${status} ."
-elif ! bash -c "curl ${repo_url}/notification/ifttt.webhook.sh -LfsS | bash -s \"${ifttt_api_key}\" \"statechanged\" \"startup\" \"${platform}/${project}\" \"${instance}\""; then
-  echo -e "${indent}\xF0\x9F\x91\xB9: server startup notification (IFTTT webhook) failed ."; fi
+if [[ -z ${ifttt_api_key} ]]; then
+  echo -e "${indent}${symbols['success']}  : ${eventName}/${status}"
+  echo -e "${indent}${symbols['success']}  : Platform: ${platform}"
+  echo -e "${indent}${symbols['success']}  : Project : ${project}"
+  echo -e "${indent}${symbols['success']}  : Instance: ${instance}"
+elif ! bash -c "curl ${repo_url}/notification/ifttt.webhook.sh -LfsS | bash -s \"${ifttt_api_key}\" \"${eventName}\" \"${status}\" \"${platform}/${project}\" \"${instance}\""; then
+  echo -e "${indent}${symbols['fatal']}  : server startup notification (IFTTT webhook) failed .";
+fi
 
 # end .
-indent='\xF0\x9F\x91\xBB'
+indent="${symbols['cogman']}"

@@ -24,6 +24,12 @@ _EOT_
 if [[ -f "${we_have_done}" ]]; then source "${we_have_done}"; fi
 
 ###
+# just pinging .
+#
+# @return always true if alive .
+function misc_available() { return 0; }
+
+###
 # just a shorthand .
 #
 # @return whether we have done all configuration, or not
