@@ -55,7 +55,7 @@ function _set_timezone() {
     echo -e "${_indent}\xF0\x9F\x8D\xA3: change system time zone \"${_current}\" to \"${_timezone}\" ."
   else echo -e "${_indent}\xF0\x9F\x91\xB9: initialization failed, should set time zone manually ."; fi
 
-  if [[ "$(timedatectl status | grep zone | sed -e 's/^.*zone: \+//' -e 's/ .*$//')" = "${_timezone:-_current}" ]]; then return 0; else return 1; fi
+  if [[ "$(timedatectl status | grep zone | sed -e 's/^.*zone: \+//' -e 's/ .*$//')" = "${_timezone:-${_current}}" ]]; then return 0; else return 1; fi
 }
 
 _set_timezone "${1:-}"

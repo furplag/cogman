@@ -31,7 +31,7 @@ if [[ -f "${we_have_done}" ]]; then source "${we_have_done}"; fi
 #
 # @return whether we have done all configuration, or not
 function did_we_have_done() {
-  local -ar _initialized=($(echo ${INIT_CONFIG_INITIALIZED} | sed -e 's/,/\n/g' | sort))
+  local -ar _initialized=("$(echo ${INIT_CONFIG_INITIALIZED} | sed -e 's/,/\n/g' | sort)")
 
   if [[ ${#_initialized[@]} -gt 0 && ${init_configs} = ${_initialized[@]} ]]; then return 0; else return 1; fi
 }
@@ -63,8 +63,6 @@ function do_config_completed() {
     INIT_CONFIG_INITIALIZED=${INIT_CONFIG_INITIALIZED}${INIT_CONFIG_INITIALIZED:+,}${1:-}
     local -ar _initialized=($(echo ${INIT_CONFIG_INITIALIZED} | sed -e 's/,/\n/g' | sort))
     INIT_CONFIG_INITIALIZED="$(echo "${_initialized[@]}" | sed -e 's/^ \+//' -e 's/ \+/,/g')"
-
-
 
     export INIT_CONFIG_INITIALIZED=${INIT_CONFIG_INITIALIZED}
 
