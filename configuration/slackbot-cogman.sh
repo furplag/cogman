@@ -166,7 +166,7 @@ function _install_hubot() {
   else _result=1; echo -e "${_indent}${symbols['error']}: failed construction Hubot ."; fi
 
   if [[ $_result -eq 0 ]] && [[ -f "${hubot_home}/external-scripts.json" ]] && [[ ! "${hubot_heroku_keepalive:-1}" = "0" ]]; then
-    sed -i -e 's@^[^\/]\+hubot-heroku-keepalive@//\0@' ${hubot_home}/external-scripts.json
+    sed -i -e 's/^.*hubot-heroku-keepalive//' ${hubot_home}/external-scripts.json
   fi
 
   return $_result
