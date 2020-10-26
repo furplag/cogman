@@ -165,7 +165,7 @@ function _install_hubot() {
     echo -e "${_indent}${symbols['success']}: Hubot activate .";
   else _result=1; echo -e "${_indent}${symbols['error']}: failed construction Hubot ."; fi
 
-  if [[ $_result -eq 0 ]] && [[ -f "${hubot_home}/external-scripts.json" ]] && [[ $(("${hubot-heroku-keepalive:-1}")) -ne 0 ]]; then
+  if [[ $_result -eq 0 ]] && [[ -f "${hubot_home}/external-scripts.json" ]] && [[ $(("${hubot_heroku_keepalive:-1}")) -ne 0 ]]; then
     sed -i -e 's@^[^\/]\+"hubot-heroku-keepalive"@//\0@' ${hubot_home}/external-scripts.json
   fi
 
