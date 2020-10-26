@@ -166,7 +166,7 @@ function _install_hubot() {
   else _result=1; echo -e "${_indent}${symbols['error']}: failed construction Hubot ."; fi
 
   if [[ $_result -eq 0 ]] && [[ -f "${hubot_home}/external-scripts.json" ]] && [[ ! "${hubot_heroku_keepalive:-1}" = "0" ]]; then
-    sed -i -e 's/^.*hubot-heroku-keepalive//' ${hubot_home}/external-scripts.json
+    sed -i -e 's/^.*hubot-heroku-keepalive.*$//' ${hubot_home}/external-scripts.json
   fi
 
   return $_result
@@ -200,7 +200,9 @@ _EOT_
   else _result=1; echo -e "${_indent}${symbols['error']}: failed construction Hubot ."; fi
 
   if [[ $_result -ne 0 ]]; then :;
-  elif systemctl daemon-reload && systemctl start slackbot-cogman.service >/dev/null 2>&1 && systemctl enable slackbot-cogman.service >/dev/null 2>&1; then
+  elif systemctl daemon-reload && systemctl start slackbot-cogman.service 2>/dev/null 2>&1 &&
+    systemctl status slackbot-cogman.service 2>/dev/null 2>&1 &&
+    systemctl enable slackbot-cogman.service >/dev/null 2>&1; then
     echo -e "${_indent}${symbols['success']}: Slackbot deamonized, running named as \"slackbot-cogman\" .";
   else _result=1; fi
 

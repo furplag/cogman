@@ -110,7 +110,7 @@ source <(curl "${repo_url}/configuration/misc.sh" -fLs);
 if ! did_we_have_done; then source <(curl "${repo_url}/el.initialize.sh" -fLsS); fi
 
 # Server startup notification .
-if ! do_we_have_to_do 'slackbot' || [[ -z "${ifttt_api_key:-}" ]]; then
+if [[ -z "${ifttt_api_key:-}" ]]; then
   echo -e "${indent}${symbols['success']}    : ${eventName}/${status}"
   echo -e "${indent}      : Platform: ${platform}"
   echo -e "${indent}      : Project : ${project}"
