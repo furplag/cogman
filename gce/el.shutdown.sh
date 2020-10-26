@@ -3,7 +3,7 @@ set -ue -o pipefail
 export LC_ALL=C
 
 ###
-# gce/el78.shutdown.sh
+# gce/el.shutdown.sh
 # https://github.com/furplag/cogman
 # Copyright 2019+ furplag
 # Licensed under MIT (https://github.com/furplag/cogman/blob/main/LICENSE)
@@ -32,10 +32,10 @@ if ! which is_preempted >/dev/null 2>&1; then bash <(curl "${repo_url}/gce/insta
 
 # vars of server status notification
 declare -r ifttt_api_key=$(retrieve_metadata 'ifttt-api-key')
-declare -r platform="GCE.$(retrieve_metadata 'zone' 'Unknown' | sed -e 's/^.*\///')"
-declare -r project=$(retrieve_metadata 'project-id' 'Unknown')
+declare -r platform="GCE.$(retrieve_metadata 'zone' 'unknown' | sed -e 's/^.*\///')"
+declare -r project=$(retrieve_metadata 'project-id' 'unknown')
 declare -r instance=$(retrieve_metadata 'name' "$(hostname)")
 declare -r eventName=$(if is_preempted; then echo 'preempted'; else echo 'shutdown'; fi)
 
-source <(curl "${repo_url}/el8.shutdown.sh" -fLsS)
+source <(curl "${repo_url}/el.shutdown.sh" -fLsS)
 
