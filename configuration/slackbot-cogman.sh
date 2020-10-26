@@ -166,7 +166,7 @@ function _install_hubot() {
   else _result=1; echo -e "${_indent}${symbols['error']}: failed construction Hubot ."; fi
 
   if [[ $_result -eq 0 ]] && [[ -f "${hubot_home}/external-scripts.json" ]] && [[ ! "${hubot_heroku_keepalive:-1}" = "0" ]]; then
-    sed -i -e 's@^[^\/]\+"hubot-heroku-keepalive"@//\0@' ${hubot_home}/external-scripts.json
+    sed -i -e 's@^[^\/]\+hubot-heroku-keepalive@//\0@' ${hubot_home}/external-scripts.json
   fi
 
   return $_result
@@ -176,7 +176,7 @@ function _daemonize_slackbot() {
   local -r _indent="${1:-${indent}${symbols['slackbot']}}"
   local -i _result=0
   if systemctl status slackbot-cogman.service >/dev/null 2>&1; then echo -e "${_indent}${symbols['ignore']}: slackbot-cogman.service is running, already .";
-  elif systemctl list-unit-files --type=service | grep -E '^slackbot-cogman\.service'; then echo -e "${_indent}${symbols['ignore']}: slackbot-cogman.service already available .";
+  elif systemctl list-unit-files --type=service | grep -E '^slackbot-cogman\.service' >/dev/null 2>&1; then echo -e "${_indent}${symbols['ignore']}: slackbot-cogman.service already available .";
   else cat <<_EOT_>/etc/systemd/system/slackbot-cogman.service
 [Unit]
 Description=Hubot - Slack, Cogman
