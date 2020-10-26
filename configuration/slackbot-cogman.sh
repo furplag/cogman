@@ -201,7 +201,7 @@ _EOT_
 
   if [[ $_result -ne 0 ]]; then :;
   elif systemctl daemon-reload && systemctl start slackbot-cogman.service 2>/dev/null 2>&1 &&
-    systemctl status slackbot-cogman.service 2>/dev/null 2>&1 &&
+    systemctl status slackbot-cogman.service >/dev/null 2>&1 &&
     systemctl enable slackbot-cogman.service >/dev/null 2>&1; then
     echo -e "${_indent}${symbols['success']}: Slackbot deamonized, running named as \"slackbot-cogman\" .";
   else _result=1; fi
