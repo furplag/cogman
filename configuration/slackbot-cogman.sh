@@ -116,7 +116,7 @@ function _install_nodejs() {
 
   if node -v >/dev/null 2>&1 && npm -v >/dev/null 2>&1; then echo -e "${_indent}${symbols['ignore']}: Node.js installed, already .";
   elif bash <(curl https://rpm.nodesource.com/setup_lts.x -LfsS) >/dev/null 2>&1 && sed -i -e 's/enabled \?=\?1/enabled=0/' /etc/yum.repos.d/nodesource*.repo; then
-    if dnf install nodejs -y --enablerepo=nodesource >/dev/null 2>&1; then echo -e "${_indent}${_indent}${symbols['success']}: Node.js installed .";
+    if dnf install nodejs -y --enablerepo=nodesource >/dev/null 2>&1; then echo -e "${_indent}${symbols['success']}: Node.js installed .";
     elif yum install nodejs -y --enablerepo=nodesource >/dev/null 2>&1; then echo -e "${_indent}${symbols['success']}: Node.js installed .";
     else _result=1; echo -e "${_indent}${symbols['error']}: failed install Node.js ."; fi
   else _result=1; echo -e "${_indent}${symbols['error']}: failed install Node.js ."; fi
