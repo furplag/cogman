@@ -5,7 +5,7 @@ add some metadatas before you create VM instance .
 
  key | default value if not specified the value of this key
  ---- | ----
- locale_lang | (no change locale, if not specified the value of this key .)
+ locale | (no change locale, if not specified the value of this key .)
  timezone | (no change Timezone, if not specified the value of this key .)
  ssh-port | (nothing to do about SSH daemon, if not specified the value of this key .)
  ssh-config-options | you can override SSH setting with option named as "ssh_config_options", like this  "PasswordAuthentication=yes PermitRootLogin=yes" .
