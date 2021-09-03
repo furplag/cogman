@@ -157,7 +157,7 @@ ssh-keygen -t Ed25519 -N ${ssh_passphrase} -C "${HOSTNAME}.ssh.key" -f ~/.ssh/${
 - [ ] Redis installed and running .
 - [ ] Node.js and npm installed .
 
-[see this .](configuration/el8/slackbot-cogman.sh)
+[see this .](configuration/slackbot-cogman.sh)
 
 ### Server startup/shutdown notification .
 you can receive notification of server startup, shutdown and any some way .
