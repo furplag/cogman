@@ -60,8 +60,8 @@ function _ssh_keygen() {
   local -r _prefix=${HOSTNAME:-"cogman-generated"}.ssh
   local -i _result=1
   [[ -d ${_dir} ]] || mkdir -p ${_dir}
-  if [ -f "${_dir}/${_prefix}.private.key" ]; then
-    echo -e "${_indent}${symbols['ignore']}: SSH key already generated, check out key file \"${_prefix}.private.key\" in \"${_dir}\" .";
+  if [ -f "${_dir}/${_prefix}.ssh.privatekey" ]; then
+    echo -e "${_indent}${symbols['ignore']}: SSH key already generated, check out key file \"${_prefix}.ssh.privatekey\" in \"${_dir}\" .";
     _result=0;
   else
     local -r _ssh_key_passphrase="$(_passphrase "${1:-}")"
@@ -70,14 +70,14 @@ function _ssh_keygen() {
     if [[ -z "${_ssh_key_passphrase}" ]]; then echo -e "${_indent}${symbols['unspecified']}: could not generate key without passphrase .";
     elif ssh-keygen ${_ssh_keygen_options} -N "${_ssh_key_passphrase}" -C "${HOSTNAME}" -f "${_dir}/${_prefix}.key" 1>/dev/null; then
       cat ${_dir}/${_prefix}.key.pub >>${_dir}/authorized_keys && \
-      mv ${_dir}/${_prefix}.key ${_dir}/${_prefix}.private.key && \
-      mv ${_dir}/${_prefix}.key.pub ${_dir}/${_prefix}.public.key && \
+      mv ${_dir}/${_prefix}.key ${_dir}/${_prefix}.privatekey && \
+      mv ${_dir}/${_prefix}.key.pub ${_dir}/${_prefix}.publickey && \
       chmod -R 600 ${_dir} && \
-      chmod -R 400 ${_dir}/*.key
+      chmod -R 400 ${_dir}/*.{public,private}key
 
       echo -e "${_indent}${symbols['remark']}: Remember that, the passphrase is: \"${_ssh_key_passphrase}\" ."
       echo -e "${_indent}${symbols['remark']}: \xF0\x9F\x99\x88\xF0\x9F\x99\x8A\xF0\x9F\x99\x89   MAKE IT NOTE OF BELOW, AND   \xF0\x9F\x99\x89\xF0\x9F\x99\x8A\xF0\x9F\x99\x88"
-      cat ${_dir}/${_prefix}.private.key
+      cat ${_dir}/${_prefix}.privatekey
       echo -e "${_indent}${symbols['remark']}: \xF0\x9F\x99\x88\xF0\x9F\x99\x8A\xF0\x9F\x99\x89 PLEASE KEEP IT IN A SAFE PLACE \xF0\x9F\x99\x89\xF0\x9F\x99\x8A\xF0\x9F\x99\x88"
       _result=0;
     else echo -e "${_indent}${symbols['fatal']}: initialization failed, should generate SSH key pair another way ."; fi
