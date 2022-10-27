@@ -75,9 +75,11 @@ if ! declare -p we_have_done >/dev/null 2>&1; then declare -r we_have_done='/etc
 # ssh_config_options | e.g. "PasswordAuthentication=yes UseDNS=no" ( use default settings, if not specified the value of this key .)
 # ssh_key_passphrase | (create random string using mkpasswd, if not specified the value of this key or empty .)
 # ssh_keygen_options | -t ed25519 ( e.g. RSA key: -t rsa -b 4096 .)
+# skip_ssh_keygen | (declare this variable with no value, if you want to skip generate SSH keypair .)
 if ! declare -p locale_lang >/dev/null 2>&1; then declare -r locale_lang=; fi
 if ! declare -p timezone >/dev/null 2>&1; then declare -r timezone=; fi
 if ! declare -p ssh_port_number >/dev/null 2>&1; then declare -r ssh_port_number=; fi
+
 if ! declare -p ssh_config_options >/dev/null 2>&1; then declare -r ssh_config_options=; fi
 if ! declare -p ssh_key_passphrase >/dev/null 2>&1; then declare -r ssh_key_passphrase=; fi
 if ! declare -p ssh_keygen_options >/dev/null 2>&1; then declare -r ssh_keygen_options=; fi
@@ -139,7 +141,8 @@ else
 fi
 
 # generate SSH key pair .
-if do_we_have_to_do 'sshkey'; then echo -e "${indent}${symbols['sshkey']}  : generate SSH key pair ...";
+if declare -p skip_ssh_keygen >/dev/null 2>&1; then echo -e "${indent}${symbols['sshkey']}${symbols['ignore']}: skipping generate SSH key pair ."; do_config_completed 'sshkey';
+elif do_we_have_to_do 'sshkey'; then echo -e "${indent}${symbols['sshkey']}  : generate SSH key pair ...";
   if bash -c "curl ${script_path}/ssh.keygen.sh -LfsS | bash -s -- \"${ssh_key_passphrase}\" \"${ssh_keygen_options}\""; then do_config_completed 'sshkey'; fi
 else echo -e "${indent}${symbols['sshkey']}${symbols['ignore']}: SSH key already generated, check out directory \"/root/.ssh\" ."; fi
 
