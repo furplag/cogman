@@ -82,19 +82,6 @@ if ! declare -p ssh_config_options >/dev/null 2>&1; then declare -r ssh_config_o
 if ! declare -p ssh_key_passphrase >/dev/null 2>&1; then declare -r ssh_key_passphrase=; fi
 if ! declare -p ssh_keygen_options >/dev/null 2>&1; then declare -r ssh_keygen_options=; fi
 
-# vars of server status notification using Slack and HUBOT
-if ! declare -p slackbot_user >/dev/null 2>&1; then declare -r slackbot_user=; fi
-if ! declare -p slackbot_group >/dev/null 2>&1; then declare -r slackbot_group=; fi
-if ! declare -p slackbot_uid >/dev/null 2>&1; then declare -ir slackbot_uid=; fi
-if ! declare -p slackbot_gid >/dev/null 2>&1; then declare -ir slackbot_gid=; fi
-if ! declare -p hubot_slack_token >/dev/null 2>&1; then declare -r hubot_slack_token=; fi
-if ! declare -p hubot_owner_domain >/dev/null 2>&1; then declare -r hubot_owner_domain=; fi
-if ! declare -p hubot_home >/dev/null 2>&1; then declare -r hubot_home=; fi
-if ! declare -p hubot_name >/dev/null 2>&1; then declare -r hubot_name=; fi
-if ! declare -p hubot_desc >/dev/null 2>&1; then declare -r hubot_desc=; fi
-if ! declare -p hubot_owner >/dev/null 2>&1; then declare -r hubot_owner=; fi
-if ! declare -p hubot_heroku_keepalive >/dev/null 2>&1; then declare -ir hubot_heroku_keepalive=; fi
-
 # start .
 if declare -p indent >/dev/null 2>&1; then indent="${indent}${symbols['initialize']}"; else declare indent="${symbols['cogman']}${symbols['initialize']}"; fi
 
