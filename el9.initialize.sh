@@ -119,6 +119,10 @@ else echo -e "${indent}${symbols['selinux']}${symbols['ignore']}: SELinux alread
 # change SSH port number for protect under crack .
 if do_we_have_to_do 'ssh'; then echo -e "${indent}${symbols['ssh']}  : change SSH port number for protect under crack ...";
   if bash -c "curl ${script_path}/ssh.modify.el9.sh -LfsS | bash -s -- \"${ssh_port_number}\" \"${ssh_config_options}\""; then do_config_completed 'ssh'; fi
+elif [[ -f /etc/ssh/sshd_config.d/00-cogman-modified.conf ]]; then
+  declare -a _current_ports=(`grep -Ei '^Port' /etc/ssh/sshd_config.d/00-cogman-modified.conf | grep -Eo '[0-9]+' 2>/dev/null`)
+  if [[ ${#_current_ports[*]} -lt 1 ]]; then _current_ports=(22); fi
+  echo -e "${indent}${symbols['ssh']}${symbols['ignore']}: SSH daemon running with port number(s) \"${_current_ports}\", already .";
 else
   declare -a _current_ports=(`grep -Ei '^Port' /etc/ssh/sshd_config | grep -Eo '[0-9]+' 2>/dev/null`)
   if [[ ${#_current_ports[*]} -lt 1 ]]; then _current_ports=(22); fi
