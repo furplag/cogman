@@ -128,7 +128,7 @@ function _ssh_modify() {
     if ls -1 /etc/ssh/sshd_config.d | grep 00-cogman-modified.conf >/dev/null 2>&1; then
       cat /etc/ssh/sshd_config.d/00-cogman-modified.conf >"/etc/ssh/sshd_config.d/00-cogman-modified.conf.$(($((`ls -1 /etc/ssh/sshd_config.d | grep 00-cogman-modified.conf | grep -Eo '[^\.]+$' | sed -e 's/^.*[^0-9].*$/0/' | sort -n | tail -n 1`)) + 1))";
     fi
-    for _config in "${!_configs[@]}"; do echo "${_config} ${_configs[${_config}]}" >/etc/ssh/sshd_config.d/00-cogman-modified.conf; done
+    for _config in "${!_configs[@]}"; do echo "${_config} ${_configs[${_config}]}" >>/etc/ssh/sshd_config.d/00-cogman-modified.conf; done
 
     if systemctl restart sshd; then
       echo -e "${_indent}${symbols['success']}: SSH config changed to ...";
